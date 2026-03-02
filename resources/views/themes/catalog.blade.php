@@ -737,7 +737,7 @@
 
             <div class="flex items-center gap-4">
                 @auth
-                    <a href="{{ route('client.dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 transition-all duration-300 hover:scale-105">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 transition-all duration-300 hover:scale-105">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 hidden md:block transition-all duration-300 hover:scale-105">Masuk</a>
                 @endauth
@@ -1090,9 +1090,9 @@
                     <p class="text-gray-400 text-sm text-center md:text-left m-0">
                         &copy; {{ date('Y') }} <span class="font-bold text-white tracking-widest">TEMANTEN</span>. Seluruh hak cipta dilindungi.
                     </p>
-                    <div class="flex items-center gap-6 text-sm text-gray-500 font-medium m-0">
-                        <a href="#" class="text-gray-500 hover:text-white transition-colors" style="text-decoration: none;">Syarat & Ketentuan</a>
-                        <a href="#" class="text-gray-500 hover:text-white transition-colors" style="text-decoration: none;">Kebijakan Privasi</a>
+                    <div class="flex items-center gap-6 mt-4 md:mt-0 font-medium text-sm">
+                        <!-- <a href="#" class="text-gray-500 hover:text-white transition-colors" style="text-decoration: none;">Syarat & Ketentuan</a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors" style="text-decoration: none;">Kebijakan Privasi</a> -->
                     </div>
                 </div>
             </div>

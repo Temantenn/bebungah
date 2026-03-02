@@ -56,10 +56,11 @@
 - Role: **Admin** dan **Client**
 - Admin dashboard: update harga tema, konfigurasi promo, approve undangan, reset password user
 
-### 🛡️ Keamanan
+### 🛡️ Keamanan & Stabilitas
 - Rate limiting pada endpoint ucapan & RSVP (10 request/menit)
 - Ownership check sebelum hapus/edit data
 - Activity logging untuk semua perubahan penting
+- **Perbaikan Rute Dasbor** 🆕 — Perbaikan alur logika *redirection* sesi yang menjamin pemisahan ruang lingkup secara sempurna antara aktivitas Administrator dan Klien setelah melakukan pemesanan.
 
 ---
 

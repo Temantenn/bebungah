@@ -61,35 +61,75 @@ class ThemeSeeder extends Seeder
         //     ]
         // );
 
-        Theme::updateOrCreate(
-            ['slug' => 'ocean-breeze'],
-            [
-                'name' => 'Ocean Breeze',
-                'thumbnail' => 'ocean-breeze.png',
-                'is_active' => true,
-                'view_path' => 'themes.ocean-breeze.index',
-            ]
-        );
+        // Theme::updateOrCreate(
+        //     ['slug' => 'ocean-breeze'],
+        //     [
+        //         'name' => 'Ocean Breeze',
+        //         'thumbnail' => 'ocean-breeze.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.ocean-breeze.index',
+        //     ]
+        // );
 
-        Theme::updateOrCreate(
-            ['slug' => 'watercolor-flow'],
-            [
-                'name' => 'Watercolor Flow',
-                'thumbnail' => 'watercolor-flow.png',
-                'is_active' => true,
-                'view_path' => 'themes.watercolor-flow.index',
-            ]
-        );
+        // Theme::updateOrCreate(
+        //     ['slug' => 'watercolor-flow'],
+        //     [
+        //         'name' => 'Watercolor Flow',
+        //         'thumbnail' => 'watercolor-flow.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.watercolor-flow.index',
+        //     ]
+        // );
 
-        Theme::updateOrCreate(
-            ['slug' => 'golden-sunrise'],
-            [
-                'name' => 'Golden Sunrise',
-                'thumbnail' => 'golden-sunrise.png',
-                'is_active' => true,
-                'view_path' => 'themes.golden-sunrise.index',
-            ]
-        );
+        // Theme::updateOrCreate(
+        //     ['slug' => 'golden-sunrise'],
+        //     [
+        //         'name' => 'Golden Sunrise',
+        //         'thumbnail' => 'golden-sunrise.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.golden-sunrise.index',
+        //     ]
+        // );
+
+        // Theme::updateOrCreate(
+        //     ['slug' => 'jawa-keraton'],
+        //     [
+        //         'name' => 'Jawa Keraton',
+        //         'thumbnail' => 'jawa-keraton.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.jawa-keraton.index',
+        //     ]
+        // );
+
+        // Theme::updateOrCreate(
+        //     ['slug' => 'midnight-garden'],
+        //     [
+        //         'name' => 'Midnight Garden',
+        //         'thumbnail' => 'midnight-garden.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.midnight-garden.index',
+        //     ]
+        // );
+
+        // Theme::updateOrCreate(
+        //     ['slug' => 'sekar-jagad'],
+        //     [
+        //         'name' => 'Sekar Jagad',
+        //         'thumbnail' => 'sekar-jagad.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.sekar-jagad.index',
+        //     ]
+        // );
+
+        // Theme::updateOrCreate(
+        //     ['slug' => 'sunda-asih'],
+        //     [
+        //         'name' => 'Sunda Asih',
+        //         'thumbnail' => 'sunda-asih.png',
+        //         'is_active' => true,
+        //         'view_path' => 'themes.sunda-asih.index',
+        //     ]
+        // );
         
     }
 }

@@ -503,8 +503,10 @@
                 e.target.value = e.target.value
                     .toLowerCase()
                     .replace(/[^a-z0-9-]/g, '-')
-                    .replace(/-+/g, '-')
-                    .replace(/^-|-$/g, '');
+                    .replace(/-+/g, '-');
+            });
+            slugInput.addEventListener('blur', function(e) {
+                e.target.value = e.target.value.replace(/^-|-$/g, '');
             });
         }
 

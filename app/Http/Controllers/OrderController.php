@@ -41,6 +41,13 @@ class OrderController extends Controller
             'theme_id.required'        => 'Silakan pilih salah satu tema.',
         ]);
 
+        $whatsapp = $request->client_whatsapp;
+        if (str_starts_with($whatsapp, '0')) {
+            $whatsapp = '62' . substr($whatsapp, 1);
+        } elseif (str_starts_with($whatsapp, '8')) {
+            $whatsapp = '62' . $whatsapp;
+        }
+
         $generatedEmail = $request->slug . '@temanten.com';
 
         if (User::where('email', $generatedEmail)->exists()) {
@@ -115,7 +122,7 @@ class OrderController extends Controller
                 'title'           => 'The Wedding of ' . $request->groom_name . ' & ' . $request->bride_name,
                 'event_date'      => $request->event_date,
                 'status'          => 'pending',
-                'client_whatsapp' => $request->client_whatsapp,
+                'client_whatsapp' => $whatsapp,
                 'content'         => $content
             ]);
 
@@ -125,14 +132,14 @@ class OrderController extends Controller
             Log::channel('activity')->info('New invitation order created', [
                 'slug'     => $request->slug,
                 'email'    => $generatedEmail,
-                'whatsapp' => $request->client_whatsapp,
+                'whatsapp' => $whatsapp,
                 'theme_id' => $request->theme_id,
             ]);
 
             return redirect()->route('order.payment')->with([
                 'success'     => 'Pesanan berhasil dibuat!',
                 'order_email' => $generatedEmail,
-                'order_wa'    => $request->client_whatsapp,
+                'order_wa'    => $whatsapp,
                 'order_slug'  => $request->slug
             ]);
 

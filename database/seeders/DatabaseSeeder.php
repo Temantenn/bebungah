@@ -15,7 +15,12 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Test User',
                 'password' => Hash::make('masuk123'),
+                'role' => 'admin',
             ]
         );
+
+        $this->call([
+            ThemeSeeder::class,
+        ]);
     }
 }
