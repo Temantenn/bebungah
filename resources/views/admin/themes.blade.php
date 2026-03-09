@@ -10,6 +10,7 @@
             darkMode: 'class',
         }
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -27,14 +28,14 @@
 <nav class="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700/50 sticky top-0 z-50 shadow-sm transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <a href="{{ route('admin.dashboard') }}" class="text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition flex items-center gap-2 text-sm">
+            <a href="{{ route('admin.dashboard') }}" class="text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition flex items-center gap-2 text-xs sm:text-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Dashboard
+                <span class="hidden sm:inline">Dashboard</span>
             </a>
             <span class="text-gray-300 dark:text-slate-600">|</span>
-            <h1 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                🎨 Manajemen Harga 
-                <span class="hidden sm:inline-block text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full ml-1">Admin</span>
+            <h1 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
+                🎨 <span class="hidden sm:inline">Manajemen</span> Harga 
+                <span class="text-[0.65rem] sm:text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full ml-1">Admin</span>
             </h1>
         </div>
         
@@ -53,10 +54,7 @@
 
     {{-- ── ALERTS ─────────────────────────────────────────── --}}
     @if(session('success'))
-    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-xl flex items-center gap-3 animate-in">
-        <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-        <span class="font-semibold">{{ session('success') }}</span>
-    </div>
+        <x-alert-success :message="session('success')" />
     @endif
 
     @if($errors->any())
@@ -229,28 +227,28 @@
     </div>
 
     {{-- ── RINGKASAN ─────────────────────────────────────── --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 animate-in" style="animation-delay:0.2s">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 animate-in" style="animation-delay:0.2s">
         @php
             $customCount = $themes->whereNotNull('price')->count();
             $defaultCount = $themes->whereNull('price')->count();
             $minPrice = $themes->min('effective_price');
             $maxPrice = $themes->max('effective_price');
         @endphp
-        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-5 py-4 text-center transition-colors duration-300">
-            <div class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ $themes->count() }}</div>
-            <div class="text-xs font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1">Total Tema</div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-4 sm:px-5 py-4 text-center transition-colors duration-300 flex flex-col justify-center">
+            <div class="text-xl sm:text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ $themes->count() }}</div>
+            <div class="text-[0.65rem] sm:text-xs font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1">Total Tema</div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-5 py-4 text-center transition-colors duration-300">
-            <div class="text-2xl font-extrabold text-rose-500 dark:text-rose-400">{{ $customCount }}</div>
-            <div class="text-xs font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1">Harga Khusus</div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-4 sm:px-5 py-4 text-center transition-colors duration-300 flex flex-col justify-center">
+            <div class="text-xl sm:text-2xl font-extrabold text-rose-500 dark:text-rose-400">{{ $customCount }}</div>
+            <div class="text-[0.65rem] sm:text-xs font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1">Harga Kh.</div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-5 py-4 text-center transition-colors duration-300">
-            <div class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp {{ number_format($minPrice, 0, ',', '.') }}</div>
-            <div class="text-[0.65rem] font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1.5">Harga Terendah</div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-3 sm:px-5 py-4 text-center transition-colors duration-300 flex flex-col justify-center">
+            <div class="text-sm sm:text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">Rp <br class="sm:hidden">{{ number_format($minPrice, 0, ',', '.') }}</div>
+            <div class="text-[0.6rem] sm:text-[0.65rem] font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1.5">Terendah</div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-5 py-4 text-center transition-colors duration-300">
-            <div class="text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-1">Rp {{ number_format($maxPrice, 0, ',', '.') }}</div>
-            <div class="text-[0.65rem] font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1.5">Harga Tertinggi</div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700/50 shadow-sm px-3 sm:px-5 py-4 text-center transition-colors duration-300 flex flex-col justify-center">
+            <div class="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-1">Rp <br class="sm:hidden">{{ number_format($maxPrice, 0, ',', '.') }}</div>
+            <div class="text-[0.6rem] sm:text-[0.65rem] font-bold tracking-wider uppercase text-gray-500 dark:text-slate-400 mt-1.5">Tertinggi</div>
         </div>
     </div>
 

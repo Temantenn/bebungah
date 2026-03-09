@@ -90,18 +90,45 @@ class ClientController extends Controller
         $content['acara']['akad']['tempat'] = $request->akad_location;
         $content['acara']['akad']['alamat'] = $request->akad_address;
         $content['acara']['akad']['maps'] = $request->akad_map_link;
+        // Wilayah Akad
+        if ($request->akad_province_name) {
+            $content['acara']['akad']['wilayah'] = [
+                'province' => $request->akad_province_name,
+                'regency'  => $request->akad_regency_name,
+                'district' => $request->akad_district_name,
+                'village'  => $request->akad_village_name,
+            ];
+        }
 
         $content['acara']['resepsi']['judul'] = $request->resepsi_title;
         $content['acara']['resepsi']['waktu'] = $request->resepsi_datetime;
         $content['acara']['resepsi']['tempat'] = $request->resepsi_location;
         $content['acara']['resepsi']['alamat'] = $request->resepsi_address;
         $content['acara']['resepsi']['maps'] = $request->resepsi_map_link;
+        // Wilayah Resepsi
+        if ($request->resepsi_province_name) {
+            $content['acara']['resepsi']['wilayah'] = [
+                'province' => $request->resepsi_province_name,
+                'regency'  => $request->resepsi_regency_name,
+                'district' => $request->resepsi_district_name,
+                'village'  => $request->resepsi_village_name,
+            ];
+        }
 
         $content['amplop']['bank_name'] = $request->bank_name;
         $content['amplop']['account_number'] = $request->bank_number;
         $content['amplop']['account_holder'] = $request->bank_holder;
         $content['amplop']['alamat_kado'] = $request->gift_address;
         $content['amplop']['maps_kado'] = $request->gift_map_link;
+        // Wilayah Kado
+        if ($request->kado_province_name) {
+            $content['amplop']['wilayah'] = [
+                'province' => $request->kado_province_name,
+                'regency'  => $request->kado_regency_name,
+                'district' => $request->kado_district_name,
+                'village'  => $request->kado_village_name,
+            ];
+        }
         if (isset($invitation->content['amplop']['qris_image'])) {
             $content['amplop']['qris_image'] = $invitation->content['amplop']['qris_image'];
         }
@@ -125,31 +152,44 @@ class ClientController extends Controller
             $content['amplop']['qris_image'] = $path;
         }
 
+        $galleryPaths = $content['media']['gallery'] ?? [];
+        if ($request->has('delete_gallery')) {
+            foreach ($request->delete_gallery as $idx) {
+                unset($galleryPaths[$idx]);
+            }
+            $galleryPaths = array_values($galleryPaths);
+        }
+
         if ($request->hasFile('gallery_photos')) {
-            $galleryPaths = $content['media']['gallery'] ?? [];
             foreach ($request->file('gallery_photos') as $photo) {
                 $filename = uniqid() . '_gallery.' . $photo->getClientOriginalExtension();
                 $path = $photo->storeAs("public/invitations/{$folderName}", $filename);
                 $galleryPaths[] = str_replace('public/', 'storage/', $path);
             }
-            $content['media']['gallery'] = $galleryPaths;
         }
+        $content['media']['gallery'] = $galleryPaths;
 
         $content['media']['video_link'] = $request->video_link;
 
         if ($request->has('love_stories')) {
             $stories = $request->love_stories;
+            $filteredStories = [];
             foreach ($stories as $key => $story) {
                 if ($request->hasFile("love_stories.{$key}.image")) {
                     $file = $request->file("love_stories.{$key}.image");
                     $filename = uniqid() . '_story.' . $file->getClientOriginalExtension();
                     $path = $file->storeAs("public/invitations/{$folderName}", $filename);
-                    $stories[$key]['image'] = str_replace('public/', 'storage/', $path);
+                    $story['image'] = str_replace('public/', 'storage/', $path);
                 } elseif (isset($content['love_stories'][$key]['image'])) {
-                    $stories[$key]['image'] = $content['love_stories'][$key]['image'];
+                    $story['image'] = $content['love_stories'][$key]['image'];
+                }
+                
+                // Only save if it has at least one filled field
+                if (!empty($story['year']) || !empty($story['title']) || !empty($story['story'])) {
+                    $filteredStories[] = $story;
                 }
             }
-            $content['love_stories'] = $stories;
+            $content['love_stories'] = array_values($filteredStories);
         }
 
         if (isset($content['acara']['resepsi']['waktu'])) {

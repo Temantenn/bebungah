@@ -152,7 +152,14 @@
             <hr class="my-3 border-gray-100">
             <p class="text-sm font-bold mb-1">{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->translatedFormat('l, d F Y') }}</p>
             <p class="text-xs text-gray-600 mb-3">Pukul {{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB</p>
-            <p class="text-xs text-gray-500 bg-gray-50 p-2 rounded">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Blue Lagoon Chapel' }}<br>{{ $invitation->content['acara']['akad']['alamat'] ?? 'Nusa Dua, Bali' }}</p>
+            <p class="text-xs text-gray-500 bg-gray-50 p-2 rounded">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Blue Lagoon Chapel' }}<br>{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
+            @php
+                $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+            @endphp
+            @if($akadL1)<p class="text-xs text-gray-400 bg-gray-50 px-2 pb-1 rounded">{{ $akadL1 }}</p>@endif
+            @if($akadL2)<p class="text-xs text-gray-400 bg-gray-50 px-2 pb-2 rounded">{{ $akadL2 }}</p>@endif
             <a href="{{ $invitation->content['acara']['akad']['maps'] ?? '#' }}" class="inline-block mt-3 text-xs font-bold text-deep-blue underline">Google Maps</a>
         </div>
 
@@ -164,7 +171,14 @@
             <hr class="my-3 border-gray-100">
             <p class="text-sm font-bold mb-1">{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->translatedFormat('l, d F Y') }}</p>
             <p class="text-xs text-gray-600 mb-3">Pukul {{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB</p>
-            <p class="text-xs text-gray-500 bg-gray-50 p-2 rounded">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'The Bay Beach Club' }}<br>{{ $invitation->content['acara']['resepsi']['alamat'] ?? 'Jimbaran, Bali' }}</p>
+            <p class="text-xs text-gray-500 bg-gray-50 p-2 rounded">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'The Bay Beach Club' }}<br>{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
+            @php
+                $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+            @endphp
+            @if($resepsiL1)<p class="text-xs text-gray-400 bg-gray-50 px-2 pb-1 rounded">{{ $resepsiL1 }}</p>@endif
+            @if($resepsiL2)<p class="text-xs text-gray-400 bg-gray-50 px-2 pb-2 rounded">{{ $resepsiL2 }}</p>@endif
             <a href="{{ $invitation->content['acara']['resepsi']['maps'] ?? '#' }}" class="inline-block mt-3 text-xs font-bold text-gold underline">Google Maps</a>
         </div>
     </section>

@@ -528,6 +528,7 @@
         }
 
         .event-detail-text span {
+            display: block;
             font-size: 0.8rem;
             color: var(--text-light);
         }
@@ -1115,6 +1116,19 @@
                             <div class="event-detail-text">
                                 <strong>{{ $invitation->content['acara']['akad']['tempat'] ?? 'Tempat' }}</strong>
                                 <span>{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</span>
+                                @php
+                                    $akadWilayah = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                                    $akadLine1 = collect([
+                                        !empty($akadWilayah['village'])  ? 'Kel. '.Str::title(strtolower($akadWilayah['village'])) : null,
+                                        !empty($akadWilayah['district']) ? 'Kec. '.Str::title(strtolower($akadWilayah['district'])) : null,
+                                    ])->filter()->implode(', ');
+                                    $akadLine2 = collect([
+                                        !empty($akadWilayah['regency'])  ? Str::title(strtolower($akadWilayah['regency'])) : null,
+                                        !empty($akadWilayah['province']) ? Str::title(strtolower($akadWilayah['province'])) : null,
+                                    ])->filter()->implode(', ');
+                                @endphp
+                                @if($akadLine1)<span>{{ $akadLine1 }}</span>@endif
+                                @if($akadLine2)<span>{{ $akadLine2 }}</span>@endif
                             </div>
                         </div>
                         @if(!empty($invitation->content['acara']['akad']['maps']))
@@ -1137,6 +1151,19 @@
                             <div class="event-detail-text">
                                 <strong>{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Tempat' }}</strong>
                                 <span>{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</span>
+                                @php
+                                    $resepsiWilayah = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                                    $resepsiLine1 = collect([
+                                        !empty($resepsiWilayah['village'])  ? 'Kel. '.Str::title(strtolower($resepsiWilayah['village'])) : null,
+                                        !empty($resepsiWilayah['district']) ? 'Kec. '.Str::title(strtolower($resepsiWilayah['district'])) : null,
+                                    ])->filter()->implode(', ');
+                                    $resepsiLine2 = collect([
+                                        !empty($resepsiWilayah['regency'])  ? Str::title(strtolower($resepsiWilayah['regency'])) : null,
+                                        !empty($resepsiWilayah['province']) ? Str::title(strtolower($resepsiWilayah['province'])) : null,
+                                    ])->filter()->implode(', ');
+                                @endphp
+                                @if($resepsiLine1)<span>{{ $resepsiLine1 }}</span>@endif
+                                @if($resepsiLine2)<span>{{ $resepsiLine2 }}</span>@endif
                             </div>
                         </div>
                         @if(!empty($invitation->content['acara']['resepsi']['maps']))

@@ -170,7 +170,14 @@
                         {{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB - Selesai
                     </div>
                     <p class="text-sm font-bold text-gray-700">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Masjid Agung Raya' }}</p>
-                    <p class="text-xs text-gray-500 mb-4">{{ $invitation->content['acara']['akad']['alamat'] ?? 'Jl. Merdeka No. 1' }}</p>
+                    <p class="text-xs text-gray-500 mb-1">{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
+                    @php
+                        $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                        $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                        $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($akadL1)<p class="text-xs text-gray-400 mb-0">{{ $akadL1 }}</p>@endif
+                    @if($akadL2)<p class="text-xs text-gray-400 mb-4">{{ $akadL2 }}</p>@else<span class="mb-4 block"></span>@endif
                     <a href="{{ $invitation->content['acara']['akad']['maps'] ?? '#' }}" target="_blank" class="text-xs bg-[#5D8AA8] text-white px-4 py-2 rounded-full font-bold hover:bg-[#4a6d85] transition">Google Maps</a>
                 </div>
 
@@ -180,7 +187,14 @@
                         {{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB - Selesai
                     </div>
                     <p class="text-sm font-bold text-gray-700">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Ballroom Hotel Splendor' }}</p>
-                    <p class="text-xs text-gray-500 mb-4">{{ $invitation->content['acara']['resepsi']['alamat'] ?? 'Jl. Merdeka No. 1' }}</p>
+                    <p class="text-xs text-gray-500 mb-1">{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
+                    @php
+                        $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                        $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                        $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($resepsiL1)<p class="text-xs text-gray-400 mb-0">{{ $resepsiL1 }}</p>@endif
+                    @if($resepsiL2)<p class="text-xs text-gray-400 mb-4">{{ $resepsiL2 }}</p>@else<span class="mb-4 block"></span>@endif
                     <a href="{{ $invitation->content['acara']['resepsi']['maps'] ?? '#' }}" target="_blank" class="text-xs bg-[#D65A78] text-white px-4 py-2 rounded-full font-bold hover:bg-[#b04a62] transition">Google Maps</a>
                 </div>
             </div>

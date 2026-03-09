@@ -105,7 +105,7 @@ class AdminController extends Controller
                 'trace'         => $e->getTraceAsString(),
             ]);
 
-            return redirect()->back()->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.');
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage() . ' di baris ' . $e->getLine());
         }
     }
 

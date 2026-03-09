@@ -1,17 +1,18 @@
 <h1 align="center">
-  🌸 Temanten — Digital Wedding Invitation Platform
+  🌸 Temanten — Platform Undangan Pernikahan Digital
 </h1>
 
 <p align="center">
   Platform undangan pernikahan digital berbasis web yang elegan, responsif, dan mudah dikustomisasi.
   <br>
-  Dibangun dengan <strong>Laravel 11</strong>, <strong>Tailwind CSS</strong>, dan <strong>Blade Templating</strong>.
+  Dibangun dengan <strong>Laravel 12</strong>, <strong>Tailwind CSS</strong>, <strong>Flowbite</strong>, dan <strong>Blade Templating</strong>.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Laravel-11-red?style=flat-square&logo=laravel" alt="Laravel">
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php" alt="PHP">
+  <img src="https://img.shields.io/badge/Laravel-12-red?style=flat-square&logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.3+-blue?style=flat-square&logo=php" alt="PHP">
   <img src="https://img.shields.io/badge/TailwindCSS-3.x-38BDF8?style=flat-square&logo=tailwindcss" alt="Tailwind">
+  <img src="https://img.shields.io/badge/Flowbite-UI-pink?style=flat-square" alt="Flowbite">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
@@ -19,55 +20,51 @@
 
 ## ✨ Fitur Utama
 
-### 🎨 Tema Undangan Unggulan (Premium Polish)
-| Tema | Konsep | Eksklusivitas |
+### 🎨 Tema Undangan Unggulan
+| Tema | Konsep | Status |
 |---|---|---|
-| **Jawa Keraton** 🆕 | Regal Sogan, Gunungan Emas, Sakral & Mewah | ⭐ Premium |
-| **Sunda Asih** 🆕 | Megamendung, Rumah Panggung, Elegan & Bersih | ⭐ Premium |
-| **Sekar Jagad** 🆕 | Batik Floral, Rose & Navy, Modern Tradisional | ⭐ Premium |
-| **Midnight Garden** 🆕 | Silk Texture, Glitter, Golden Glow & Metallic Aura | ⭐ Premium |
 | **Royal Glass** | Glassmorphism mewah modern | ✅ |
 | **Emerald Garden** | Hijau emerald & emas elegan | ✅ |
 | **Floral Pastel** | Romantis bunga pastel lembut | ✅ |
 | **Rustic Green** | Natural kayu & dedaunan | ✅ |
 | **Boho Terracotta** | Bohemian hangat & artistik | ✅ |
+| **Ocean Breeze** | Segar & minimalis biru laut | ✅ |
+| **Watercolor Flow** | Artistik cat air lembut | ✅ |
 
-### 🛠️ Fitur Admin & Monetisasi
-- 👥 **Manajemen Kelola Admin** 🆕 — Super Admin dapat menambah, melihat, dan menghapus akun staf atau admin lain secara langsung dari dashboard tanpa harus membuka database.
-- 💰 **Manajemen Harga Per-Tema & Promo Spesial** 🆕 — Admin dapat mengatur harga dasar dan harga promo ("Harga Coret") untuk setiap tema melalui dashboard. Harga otomatis terupdate di katalog dan checkout form.
-- 🏗️ **Katalog Dinamis & Filter Harga** — Katalog tema dilengkapi filter harga kustom dan dropdown premium untuk memudahkan navigasi.
-- 🔐 **Persetujuan Undangan** — Kontrol penuh admin untuk mengaktifkan atau menonaktifkan undangan user.
+### 🛠️ Fitur Admin Dashboard
+- 🔐 **Modal Konfirmasi Modern (Flowbite)** — Konfirmasi Reset Password & Persetujuan Order menggunakan modal UI yang elegan, berpusat sempurna, tanpa bergantung penuh pada library eksternal.
+- 🔑 **Tombol Salin Password** — Setelah reset password berhasil, admin langsung bisa menyalin password baru dengan satu klik.
+- 👥 **Manajemen Klien Aktif** — Tabel detail klien aktif lengkap dengan link undangan, WhatsApp, serta tombol manajemen.
+- 💰 **Manajemen Harga Per-Tema & Promo** — Admin dapat mengatur harga dasar dan harga promo untuk setiap tema.
+- 🔐 **Persetujuan Undangan** — Kontrol penuh admin untuk mengaktifkan undangan user setelah pembayaran dikonfirmasi.
+- 🛡️ **Keamanan Rute** — Klien yang belum disetujui tidak bisa bypass ke dashboard via auto-login.
 
-### 👥 Dashboard Client
-- 💳 **Amplop Digital Berbasis QRIS** 🆕 — Memungkinkan klien untuk mengunggah gambar Barcode QRIS guna mempermudah tamu dalam memberikan kado digital secara *cashless* yang langsung terintegrasi dengan beragam pilihan tema.
+### 👥 Dashboard Klien
+- 💳 **Amplop Digital Berbasis QRIS** — Upload barcode QRIS untuk terima kado digital dari tamu.
+- 📸 **Upload Foto Galeri dengan Kompresi Otomatis** — Foto dikompresi secara client-side ke format **WebP HD** (resolusi dipertahankan hingga 2500px, kualitas 85%) sebelum dikirim ke server, mencegah error `PostTooLargeException` di shared hosting.
+- ❤️ **Form Love Story Dinamis** — Tambah/hapus cerita cinta langsung dari form tanpa batas.
+- 🖼️ **Manajemen Foto Galeri** — Hapus foto individual dari galeri langsung di halaman settings.
 - 📊 **Statistik RSVP real-time** — Total, Hadir, Tidak Hadir, Pending + progress bar.
 - 💍 **Kustomisasi Konten & Musik** — Diedit langsung melalui dashboard settings.
 - 🔍 **Manajemen Tamu (CRM)** — Search, filter status, import Excel/CSV, dan template siap pakai.
-- 💬 **WhatsApp Blast & Link Generator** — Kirim undangan personal otomatis via WA dengan URL-encoded message.
-- 🔔 **Toast Notification System** — Notifikasi real-time untuk interaksi sukses/gagal.
+- 💬 **WhatsApp Blast & Link Generator** — Kirim undangan personal otomatis via WA.
+- 🗺️ **Integrasi Wilayah Indonesia** — Dropdown Provinsi, Kabupaten, Kecamatan, Kelurahan.
 
 ### 🌐 Landing Page & Katalog
-- 📱 **Dynamic Hero Mockup** — Tampilan mock-up interaktif pada tema populer dan fitur Live Preview iframe.
-- ❓ **Tanya Jawab (FAQ) & Footer Modern** 🆕 — Bagian FAQ accordion intuitif dan layout footer 3 kolom fungsional terintegrasi langsung dengan WhatsApp Admin & Email.
-- 💳 **Pemesanan Mudah** — Integrasi form order responsif yang menampilkan rincian harga, potongan harga, dan badge promo secara real-time.
+- 📱 **Dynamic Hero Mockup** — Live Preview iframe langsung dari halaman katalog & landing.
+- 💳 **Pemesanan Mudah** — Form order responsif dengan rincian harga & badge promo real-time.
+- ❓ **FAQ Accordion & Footer Modern** — FAQ intuitif & footer 3 kolom terintegrasi WhatsApp Admin.
 
-### 🔐 Authentikasi & Role
-- Login, Register, Verifikasi Email, Reset Password (Laravel Breeze)
-- Role: **Admin** dan **Client**
-- Admin dashboard: update harga tema, konfigurasi promo, approve undangan, reset password user
-
-### 🛡️ Keamanan & Stabilitas
-- Rate limiting pada endpoint ucapan & RSVP (10 request/menit)
-- Ownership check sebelum hapus/edit data
-- Activity logging untuk semua perubahan penting
-- **Perbaikan Rute Dasbor** 🆕 — Perbaikan alur logika *redirection* sesi yang menjamin pemisahan ruang lingkup secara sempurna antara aktivitas Administrator dan Klien setelah melakukan pemesanan.
+### 🗺️ Google Maps Integration
+- Tombol Google Maps yang berfungsi di semua tema (Royal Glass, Rustic Green, Floral Pastel)
+- Klik tombol langsung membuka Google Maps di tab baru
 
 ---
 
 ## 🚀 Instalasi & Setup
 
 ### Prasyarat
-- PHP >= 8.2
+- PHP >= 8.3
 - Composer
 - Node.js & NPM
 - MySQL / MariaDB
@@ -76,8 +73,8 @@
 
 ```bash
 # 1. Clone repo
-git clone https://github.com/username/bebungah.git
-cd bebungah
+git clone https://github.com/username/temanten.git
+cd temanten
 
 # 2. Install dependencies PHP
 composer install
@@ -92,7 +89,7 @@ cp .env.example .env
 php artisan key:generate
 
 # 6. Konfigurasi database di .env
-# DB_DATABASE=bebungah
+# DB_DATABASE=temanten
 # DB_USERNAME=root
 # DB_PASSWORD=
 
@@ -116,13 +113,13 @@ Buka di browser: **http://localhost:8000**
 ## 📁 Struktur Proyek
 
 ```
-bebungah/
+temanten/
 ├── app/
 │   ├── Http/Controllers/
-│   │   ├── ClientController.php     # Dashboard, guest CRUD, import
-│   │   ├── AdminController.php      # Admin panel
+│   │   ├── ClientController.php     # Dashboard, guest CRUD, import, galeri
+│   │   ├── AdminController.php      # Admin panel, reset password, approve
 │   │   ├── InvitationController.php # Tampil & RSVP undangan
-│   │   ├── OrderController.php      # Alur pemesanan
+│   │   ├── OrderController.php      # Alur pemesanan (tanpa auto-login)
 │   │   └── ThemeController.php      # Katalog tema
 │   └── Models/
 │       ├── Invitation.php
@@ -133,14 +130,17 @@ bebungah/
 │   ├── music/           # Musik per tema (slug.mp3)
 │   └── thumbnail/       # Thumbnail kartu tema (slug.png)
 ├── resources/views/
+│   ├── admin/
+│   │   └── dashboard.blade.php  # Flowbite modals (reset & approve)
 │   ├── client/
 │   │   ├── dashboard.blade.php
-│   │   └── settings.blade.php
+│   │   └── settings.blade.php   # WebP compression + dinamis form
+│   ├── components/
+│   │   └── alert-success.blade.php
 │   ├── themes/
-│   │   ├── catalog.blade.php
+│   │   ├── royal-glass/
 │   │   ├── floral-pastel/
-│   │   ├── ocean-breeze/
-│   │   ├── midnight-garden/  🆕
+│   │   ├── rustic-green/
 │   │   └── ...
 │   ├── landing.blade.php
 │   └── auth/
@@ -160,13 +160,11 @@ bebungah/
 | `POST` | `/rsvp/{id}` | Submit RSVP |
 | `POST` | `/kirim-ucapan` | Kirim ucapan |
 | `GET` | `/client/dashboard` | Dashboard client |
-| `POST` | `/client/store-guest` | Tambah tamu manual |
-| `DELETE` | `/client/delete-guest/{guest}` | Hapus tamu |
-| `POST` | `/client/import-guests` | Import Excel/CSV |
-| `GET` | `/client/download-template` | Download template |
-| `GET` | `/client/settings` | Edit undangan |
-| `PUT` | `/client/settings` | Update undangan |
+| `GET` | `/client/settings` | Edit undangan & galeri |
+| `POST` | `/client/settings` | Update undangan (dengan kompresi foto) |
 | `GET` | `/admin/dashboard` | Admin panel |
+| `POST` | `/admin/approve/{id}` | Approve order |
+| `POST` | `/admin/reset-password/{id}` | Reset password klien |
 
 ---
 
@@ -176,18 +174,18 @@ bebungah/
 |---|---|---|
 | Musik tema | `public/assets/music/{slug}.mp3` | MP3 |
 | Thumbnail kartu | `public/assets/thumbnail/{slug}.png` | PNG |
-| Upload klien | `storage/app/public/invitations/{id}/` | Any |
+| Upload klien | `storage/app/public/invitations/{id}/` | WebP/Any |
 
 ---
 
 ## 🧑‍💻 Tech Stack
 
-- **Backend**: Laravel 11, PHP 8.2+
-- **Frontend**: Blade, Tailwind CSS, Vite, Vanilla JS
+- **Backend**: Laravel 12, PHP 8.3+
+- **Frontend**: Blade, Tailwind CSS 3.x, Vite, Vanilla JS
+- **UI Components**: Flowbite (modal dialogs)
 - **Database**: MySQL/MariaDB (Eloquent ORM)
 - **Auth**: Laravel Breeze
 - **Excel**: Maatwebsite/Laravel-Excel
-- **Icons**: Phosphor Icons
 - **Fonts**: Google Fonts (Cormorant Garamond, Jost, Pinyon Script, dll)
 
 ---

@@ -103,7 +103,7 @@
                     </div>
                     <div class="relative z-20 text-center">
                         <h3 class="font-rustic-script text-5xl text-charcoal mb-1">{{ $invitation->content['mempelai']['pria']['nama'] ?? 'Mempelai Pria' }}</h3>
-                        <p class="text-xs font-bold text-sage uppercase tracking-widest mb-3">Putra Bpk. {{ $invitation->content['mempelai']['pria']['ayah'] ?? '...' }}</p>
+                        <p class="text-xs font-bold text-sage uppercase tracking-widest mb-3">Putra Bpk. {{ $invitation->content['mempelai']['pria']['ayah'] ?? '...' }} & Ibu {{ $invitation->content['mempelai']['pria']['ibu'] ?? '...' }}</p>
 
                         @if(!empty($invitation->content['mempelai']['pria']['instagram']))
                         <a href="https://instagram.com/{{ $invitation->content['mempelai']['pria']['instagram'] }}" target="_blank" class="inline-flex items-center gap-1 text-xs bg-white border border-sage px-3 py-1 rounded-full hover:bg-sage hover:text-white transition cursor-pointer z-30 relative text-sage-dark">
@@ -120,7 +120,7 @@
                     </div>
                     <div class="relative z-20 text-center">
                         <h3 class="font-rustic-script text-5xl text-charcoal mb-1">{{ $invitation->content['mempelai']['wanita']['nama'] ?? 'Mempelai Wanita' }}</h3>
-                        <p class="text-xs font-bold text-sage uppercase tracking-widest mb-3">Putra Bpk. {{ $invitation->content['mempelai']['wanita']['ayah'] ?? '...' }}</p>
+                        <p class="text-xs font-bold text-sage uppercase tracking-widest mb-3">Putri Bpk. {{ $invitation->content['mempelai']['wanita']['ayah'] ?? '...' }} & Ibu {{ $invitation->content['mempelai']['wanita']['ibu'] ?? '...' }}</p>
 
                         @if(!empty($invitation->content['mempelai']['wanita']['instagram']))
                         <a href="https://instagram.com/{{ $invitation->content['mempelai']['wanita']['instagram'] }}" target="_blank" class="inline-flex items-center gap-1 text-xs bg-white border border-sage px-3 py-1 rounded-full hover:bg-sage hover:text-white transition cursor-pointer z-30 relative text-sage-dark">
@@ -181,9 +181,16 @@
                 <i class="ph-fill ph-hands-praying text-4xl mb-4 text-terracotta"></i>
                 <h3 class="font-serif text-2xl mb-2">{{ $invitation->content['acara']['akad']['judul'] ?? 'Akad Nikah' }}</h3>
                 <p class="text-3xl font-bold my-4 text-white">{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB</p>
-                <p class="opacity-80 mb-6">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Lokasi Akad' }}</p>
+                <p class="opacity-80 mb-2">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Lokasi Akad' }}</p>
+                @php
+                    $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                    $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                    $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                @endphp
+                @if($akadL1)<p class="text-xs opacity-60 mb-0">{{ $akadL1 }}</p>@endif
+                @if($akadL2)<p class="text-xs opacity-60 mb-6">{{ $akadL2 }}</p>@else<span class="mb-6 block"></span>@endif
                 @if(!empty($invitation->content['acara']['akad']['maps']))
-                <a href="{{ $invitation->content['acara']['akad']['maps'] }}" target="_blank" class="inline-block border border-cream px-6 py-2 text-xs uppercase hover:bg-cream hover:text-sage-dark transition rounded-full">Google Maps</a>
+                <a href="{{ $invitation->content['acara']['akad']['maps'] }}" target="_blank" class="inline-block border border-cream px-6 py-2 text-xs uppercase hover:bg-cream hover:text-sage-dark transition rounded-full relative z-40">Google Maps</a>
                 @endif
             </div>
 
@@ -191,9 +198,16 @@
                 <i class="ph-fill ph-wine text-4xl mb-4 text-terracotta"></i>
                 <h3 class="font-serif text-2xl mb-2">{{ $invitation->content['acara']['resepsi']['judul'] ?? 'Resepsi' }}</h3>
                 <p class="text-3xl font-bold my-4 text-white">{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB</p>
-                <p class="opacity-80 mb-6">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Lokasi Resepsi' }}</p>
+                <p class="opacity-80 mb-2">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Lokasi Resepsi' }}</p>
+                @php
+                    $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                    $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                    $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                @endphp
+                @if($resepsiL1)<p class="text-xs opacity-60 mb-0">{{ $resepsiL1 }}</p>@endif
+                @if($resepsiL2)<p class="text-xs opacity-60 mb-6">{{ $resepsiL2 }}</p>@else<span class="mb-6 block"></span>@endif
                 @if(!empty($invitation->content['acara']['resepsi']['maps']))
-                <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" target="_blank" class="inline-block border border-cream px-6 py-2 text-xs uppercase hover:bg-cream hover:text-sage-dark transition rounded-full">Google Maps</a>
+                <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" target="_blank" class="inline-block border border-cream px-6 py-2 text-xs uppercase hover:bg-cream hover:text-sage-dark transition rounded-full relative z-40">Google Maps</a>
                 @endif
             </div>
         </div>

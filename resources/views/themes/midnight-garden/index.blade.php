@@ -700,9 +700,16 @@
                     <i class="ph-fill ph-clock"></i>
                     Pukul {{ \Carbon\Carbon::parse($akad['waktu'] ?? now())->format('H:i') }} WIB
                 </div>
-                <div class="event-detail">
-                    <i class="ph-fill ph-map-pin"></i>
-                    {{ $akad['tempat'] ?? '-' }}, {{ $akad['alamat'] ?? '' }}
+                <div class="event-detail" style="flex-direction: column; align-items: flex-start; padding-left: 24px; position: relative;">
+                    <i class="ph-fill ph-map-pin" style="position: absolute; left: 0; top: 2px;"></i>
+                    <span>{{ $akad['tempat'] ?? '-' }}@if(!empty($akad['alamat'])), {{ $akad['alamat'] }}@endif</span>
+                    @php
+                        $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                        $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                        $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($akadL1)<span>{{ $akadL1 }}</span>@endif
+                    @if($akadL2)<span>{{ $akadL2 }}</span>@endif
                 </div>
                 @if(!empty($akad['maps']))
                 <a href="{{ $akad['maps'] }}" target="_blank" class="btn-maps">
@@ -721,9 +728,16 @@
                     <i class="ph-fill ph-clock"></i>
                     Pukul {{ \Carbon\Carbon::parse($resepsi['waktu'] ?? now())->format('H:i') }} WIB
                 </div>
-                <div class="event-detail">
-                    <i class="ph-fill ph-map-pin"></i>
-                    {{ $resepsi['tempat'] ?? '-' }}, {{ $resepsi['alamat'] ?? '' }}
+                <div class="event-detail" style="flex-direction: column; align-items: flex-start; padding-left: 24px; position: relative;">
+                    <i class="ph-fill ph-map-pin" style="position: absolute; left: 0; top: 2px;"></i>
+                    <span>{{ $resepsi['tempat'] ?? '-' }}@if(!empty($resepsi['alamat'])), {{ $resepsi['alamat'] }}@endif</span>
+                    @php
+                        $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                        $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                        $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($resepsiL1)<span>{{ $resepsiL1 }}</span>@endif
+                    @if($resepsiL2)<span>{{ $resepsiL2 }}</span>@endif
                 </div>
                 @if(!empty($resepsi['maps']))
                 <a href="{{ $resepsi['maps'] }}" target="_blank" class="btn-maps">

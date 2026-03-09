@@ -134,7 +134,14 @@
             <div class="mb-4">
                 <p class="text-sm font-bold text-coffee">{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
             </div>
-            <p class="text-xs text-gray-600 mb-6 px-4">{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
+            <p class="text-xs text-gray-600 mb-1 px-4">{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
+            @php
+                $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+            @endphp
+            @if($akadL1)<p class="text-xs text-gray-500 mb-0 px-4">{{ $akadL1 }}</p>@endif
+            @if($akadL2)<p class="text-xs text-gray-500 mb-4 px-4">{{ $akadL2 }}</p>@else<span class="mb-4 block"></span>@endif
             @if(!empty($invitation->content['acara']['akad']['maps']))
             <a href="{{ $invitation->content['acara']['akad']['maps'] }}" class="inline-block bg-[#F2EBE5] text-terra px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-[#DBCDBA] transition">Open Map</a>
             @endif
@@ -149,7 +156,14 @@
             <div class="mb-4">
                 <p class="text-sm font-bold text-coffee">{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
             </div>
-            <p class="text-xs text-gray-600 mb-6 px-4">{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
+            <p class="text-xs text-gray-600 mb-1 px-4">{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
+            @php
+                $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+            @endphp
+            @if($resepsiL1)<p class="text-xs text-gray-500 mb-0 px-4">{{ $resepsiL1 }}</p>@endif
+            @if($resepsiL2)<p class="text-xs text-gray-500 mb-4 px-4">{{ $resepsiL2 }}</p>@else<span class="mb-4 block"></span>@endif
             @if(!empty($invitation->content['acara']['resepsi']['maps']))
             <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" class="inline-block bg-[#F2EBE5] text-terra px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-[#DBCDBA] transition">Open Map</a>
             @endif

@@ -148,7 +148,7 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <a id="btnOrderTheme" href="#" class="btn-primary relative flex bg-indigo-600 hover:bg-indigo-700 text-white px-6 md:px-8 py-3 md:py-3.5 rounded-full text-sm md:text-base font-bold transition-all shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 items-center gap-2 hover:scale-105">
+                <a id="btnOrderTheme" href="javascript:void(0)" class="btn-primary relative flex bg-indigo-600 hover:bg-indigo-700 text-white px-6 md:px-8 py-3 md:py-3.5 rounded-full text-sm md:text-base font-bold transition-all shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 items-center gap-2 hover:scale-105">
                     <span class="relative z-10">Pilih Tema Ini</span>
                     <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </a>
@@ -162,7 +162,7 @@
         <div class="flex-1 flex items-center justify-center overflow-hidden relative p-6" onclick="closePreview()">
             
             <!-- Loader - Enhanced -->
-            <div id="loader" class="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none gap-4">
+            <div id="loader" class="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none gap-4 bg-gray-900/80 backdrop-blur-sm">
                 <div class="relative">
                     <div class="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500/30 border-t-indigo-500"></div>
                     <div class="absolute inset-0 animate-ping rounded-full h-16 w-16 border-4 border-indigo-500/20"></div>
@@ -175,7 +175,7 @@
                 
                 <div id="phoneNotch" class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[140px] h-[32px] bg-gray-900 rounded-b-3xl z-30 pointer-events-none transition-opacity duration-300"></div>
 
-                <iframe id="previewFrame" src="" class="w-full h-full bg-white rounded-3xl" frameborder="0" onload="if(window.hideLoader) window.hideLoader()"></iframe>
+                <iframe id="previewFrame" src="" class="w-full h-full bg-white rounded-3xl" frameborder="0" onload="if(window.onFrameLoad) window.onFrameLoad()"></iframe>
 
             </div>
         </div>
@@ -183,7 +183,7 @@
 
     <!-- Navigation - Enhanced -->
     <nav id="mainNav" class="fixed w-full z-50 glass border-b border-gray-100/50 transition-all duration-500">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex justify-between items-center">
             
             <!-- Logo - Enhanced -->
             <a href="#" class="flex items-center gap-3 group">
@@ -196,7 +196,7 @@
                 </div>
             </a>
 
-            <!-- Nav Links - Enhanced -->
+            <!-- Nav Links - Desktop -->
             <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-gray-600">
                 <a href="#fitur" class="hover:text-indigo-600 transition-all duration-300 hover:scale-105 relative group">
                     Fitur
@@ -208,16 +208,35 @@
                 </a>
             </div>
 
-            <!-- CTA Buttons - Enhanced -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-4">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 transition-all duration-300 hover:scale-105">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 hidden md:block transition-all duration-300 hover:scale-105">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 hidden md:block transition-all duration-300 hover:scale-105">Masuk</a>
                 @endauth
-                <a href="{{ route('order.create') }}" class="btn-primary relative bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:scale-105 transition-all duration-300">
+                <a href="{{ route('order.create') }}" class="btn-primary relative bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:scale-105 transition-all duration-300 whitespace-nowrap">
                     <span class="relative z-10">Buat Undangan</span>
                 </a>
+                <!-- Mobile Menu Button -->
+                <button type="button" id="mobileMenuBtn" class="md:hidden text-gray-700 hover:text-indigo-600 p-1 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobileMenuPanel" class="hidden md:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 origin-top transform transition-all duration-300 opacity-0 -translate-y-2">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#fitur" class="block w-full text-gray-700 font-semibold hover:text-indigo-600 py-2 mobile-link">Fitur Unggulan</a>
+                <a href="{{ route('themes.index') }}" class="block w-full text-gray-700 font-semibold hover:text-indigo-600 py-2">Katalog Tema</a>
+                <div class="h-px bg-gray-100 my-2"></div>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="block w-full text-center text-gray-700 font-bold hover:text-indigo-600 py-2 border-2 border-gray-200 rounded-full">Dashboard Menu</a>
+                @else
+                    <a href="{{ route('login') }}" class="block w-full text-center text-gray-700 font-bold hover:text-indigo-600 py-2 border-2 border-gray-200 rounded-full">Masuk Akun</a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -316,7 +335,7 @@
     <section id="tema" class="py-32 bg-gray-50 overflow-hidden">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Section Header - Enhanced -->
-            <div class="text-center mb-20 space-y-5 animate-fadeInUp">
+            <div class="text-center mb-28 md:mb-32 space-y-5 animate-fadeInUp">
                 <div class="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-full text-indigo-700 text-sm font-semibold">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                     <span>Koleksi Tema Premium</span>
@@ -337,7 +356,7 @@
                 $featured = [false, true, false];
             @endphp
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 place-items-center mt-12 md:mt-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 place-items-center mt-16 md:mt-32">
                 @foreach($catalogThemes as $i => $theme)
                 @php
                     $rotation = $rotations[$i] ?? '';
@@ -421,88 +440,63 @@
         </div>
     </section>
 
-    <!-- Features Section - Enhanced -->
-    <section id="fitur" class="py-28 bg-white relative overflow-hidden">
-        <!-- Decorative Background -->
-        <div class="absolute top-0 right-0 w-1/3 h-full bg-indigo-50 opacity-50"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <!-- Section Header - Enhanced -->
-            <div class="text-center mb-20 space-y-5">
-                <div class="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-full text-indigo-700 text-sm font-semibold">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
-                    <span>Fitur Unggulan</span>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-                    Semua yang Anda <span class="font-serif italic text-indigo-600">Butuhkan</span>
-                </h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Platform lengkap dengan fitur premium untuk undangan pernikahan digital yang sempurna
-                </p>
-            </div>
-
-            <!-- Features Grid - Enhanced -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-12">
-                
-                <!-- Feature 1 -->
-                <div class="group p-8 bg-white rounded-3xl border-2 border-gray-100 hover:border-indigo-200 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 space-y-6">
-                    <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
-                        ⚡
-                    </div>
-                    <div class="space-y-3">
-                        <h3 class="font-bold text-2xl text-gray-900 group-hover:text-indigo-600 transition-colors">Proses Super Cepat</h3>
-                        <p class="text-gray-600 leading-relaxed">Undangan langsung aktif setelah pembayaran terverifikasi. Edit data kapan saja tanpa batasan waktu.</p>
-                    </div>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="group p-8 bg-white rounded-3xl border-2 border-gray-100 hover:border-purple-200 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 space-y-6">
-                    <div class="w-20 h-20 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
-                        📱
-                    </div>
-                    <div class="space-y-3">
-                        <h3 class="font-bold text-2xl text-gray-900 group-hover:text-purple-600 transition-colors">100% Mobile Friendly</h3>
-                        <p class="text-gray-600 leading-relaxed">Tampilan responsif sempurna di semua perangkat. Loading cepat dan pengalaman browsing yang mulus.</p>
-                    </div>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="group p-8 bg-white rounded-3xl border-2 border-gray-100 hover:border-pink-200 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 space-y-6">
-                    <div class="w-20 h-20 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
-                        💌
-                    </div>
-                    <div class="space-y-3">
-                        <h3 class="font-bold text-2xl text-gray-900 group-hover:text-pink-600 transition-colors">Unlimited Undangan</h3>
-                        <p class="text-gray-600 leading-relaxed">Bagikan ke sebanyak mungkin teman dan kerabat tanpa batasan jumlah.</p>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Additional Features List - New -->
-            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center space-y-3">
-                    <div class="text-3xl">🎵</div>
-                    <div class="font-semibold text-gray-900">Background Music</div>
-                    <div class="text-sm text-gray-500">Musik latar otomatis</div>
-                </div>
-                <div class="text-center space-y-3">
-                    <div class="text-3xl">📸</div>
-                    <div class="font-semibold text-gray-900">Galeri Foto</div>
-                    <div class="text-sm text-gray-500">Upload foto unlimited</div>
-                </div>
-                <div class="text-center space-y-3">
-                    <div class="text-3xl">💬</div>
-                    <div class="font-semibold text-gray-900">Buku Tamu Digital</div>
-                    <div class="text-sm text-gray-500">Ucapan dari tamu</div>
-                </div>
-                <div class="text-center space-y-3">
-                    <div class="text-3xl">🗺️</div>
-                    <div class="font-semibold text-gray-900">Google Maps</div>
-                    <div class="text-sm text-gray-500">Lokasi akurat</div>
-                </div>
-            </div>
+    <!-- Features Section - Tailblocks -->
+    <section id="fitur" class="text-gray-600 body-font bg-white">
+      <div class="container px-5 py-24 mx-auto">
+        <div class="text-center mb-20">
+          <div class="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-full text-indigo-700 text-sm font-semibold mb-4 animate-fadeInUp">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
+              <span>Fitur Unggulan</span>
+          </div>
+          <h1 class="sm:text-5xl text-4xl font-extrabold title-font text-gray-900 mb-4 animate-fadeInUp">Semua yang Anda <span class="font-serif italic text-indigo-600">Butuhkan</span></h1>
+          <p class="text-lg leading-relaxed max-w-2xl mx-auto text-gray-600 animate-fadeInUp">Platform lengkap dengan fitur premium untuk undangan pernikahan digital yang sempurna, cepat, dan modern.</p>
+          <div class="flex mt-6 justify-center">
+            <div class="w-16 h-1 rounded-full bg-indigo-500 inline-flex"></div>
+          </div>
         </div>
+        <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4 md:space-y-0 space-y-6">
+          <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5 flex-shrink-0">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <div class="flex-grow">
+              <h2 class="text-gray-900 text-xl title-font font-bold mb-3">Proses Super Cepat</h2>
+              <p class="leading-relaxed text-gray-600">Undangan langsung aktif setelah pembayaran terverifikasi. Edit data kapan saja tanpa batasan waktu.</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5 flex-shrink-0">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+              </svg>
+            </div>
+            <div class="flex-grow">
+              <h2 class="text-gray-900 text-xl title-font font-bold mb-3">100% Mobile Friendly</h2>
+              <p class="leading-relaxed text-gray-600">Tampilan responsif sempurna di semua perangkat. Loading cepat dan pengalaman browsing yang mulus bagi seluruh tamu undangan Anda.</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5 flex-shrink-0">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="flex-grow">
+              <h2 class="text-gray-900 text-xl title-font font-bold mb-3">Unlimited Undangan</h2>
+              <p class="leading-relaxed text-gray-600">Bagikan ke sebanyak mungkin teman, relasi, dan keluarga tanpa ada batasan kuota nama tamu sama sekali.</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-16 animate-fadeInUp animation-delay-400">
+            <a href="{{ route('order.create') }}" class="btn-primary inline-flex text-white bg-indigo-600 border-0 py-3 px-8 mx-auto focus:outline-none hover:bg-indigo-700 rounded-full font-bold text-lg transition-transform hover:-translate-y-1 shadow-xl shadow-indigo-300">
+                Mulai Buat Undangan
+            </a>
+        </div>
+      </div>
     </section>
 
     <!-- CTA Section - New -->
@@ -551,52 +545,77 @@
     </section>
 
     <!-- FAQ Section - New -->
-    <section id="faq" class="py-24 bg-white">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="text-center mb-16 space-y-4 animate-fadeInUp">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
-                    Pertanyaan Seputar <span class="text-indigo-600">Temanten</span>
-                </h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Kami merangkum pertanyaan yang sering ditanyakan oleh calon pengantin. Jika ada pertanyaan lain, jangan ragu hubungi kami!</p>
-            </div>
+    <section id="faq" class="bg-white dark:bg-gray-900 py-24">
+        <div class="container max-w-4xl px-6 mx-auto">
+            <h1 class="text-3xl font-bold text-center text-gray-800 lg:text-4xl dark:text-white animate-fadeInUp">
+                Pertanyaan Seputar <span class="text-indigo-600">Temanten</span>
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto text-center mt-4 mb-16 dark:text-gray-300 animate-fadeInUp">Kami merangkum pertanyaan yang sering ditanyakan oleh calon pengantin. Jika ada pertanyaan lain, jangan ragu hubungi kami!</p>
 
-            <div class="space-y-4">
+            <div class="mt-12 space-y-8">
                 <!-- FAQ Item 1 -->
-                <div class="border-2 border-gray-100 rounded-2xl p-6 hover:border-indigo-100 transition-colors animate-fadeInUp">
-                    <button class="flex justify-between items-center w-full text-left font-bold text-gray-900 group" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                        <span class="text-lg">Berapa lama proses pembuatan undangan?</span>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="border-2 border-gray-100 rounded-lg dark:border-gray-700 animate-fadeInUp transition-colors hover:border-indigo-100 dark:hover:border-indigo-900">
+                    <button class="flex items-center justify-between w-full p-8 text-left group" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <h1 class="font-semibold text-gray-700 dark:text-white group-hover:text-indigo-600 transition-colors">Berapa lama proses pembuatan undangan?</h1>
+
+                        <span class="text-white bg-indigo-500 rounded-full flex-shrink-0 ml-4 p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </span>
                     </button>
-                    <div class="hidden mt-4 text-gray-600 leading-relaxed pr-8">
-                        Proses pembuatan undangan sangat cepat! Anda hanya perlu memilih tema, mengisi form data diri dan acara, lalu melakukan pembayaran. Setelah pembayaran terverifikasi otomatis, akun & undangan Anda langsung aktif dan siap disebarkan saat itu juga.
+
+                    <div class="hidden transition-all duration-300">
+                        <hr class="border-gray-200 dark:border-gray-700">
+                        <p class="p-8 text-sm md:text-base text-gray-500 dark:text-gray-300 leading-relaxed">
+                            Proses pembuatan undangan sangat cepat! Anda hanya perlu memilih tema, mengisi form data diri dan acara, lalu melakukan pembayaran. Setelah pembayaran terverifikasi otomatis, akun & undangan Anda langsung aktif dan siap disebarkan saat itu juga.
+                        </p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 2 -->
-                <div class="border-2 border-gray-100 rounded-2xl p-6 hover:border-indigo-100 transition-colors animate-fadeInUp animation-delay-200">
-                    <button class="flex justify-between items-center w-full text-left font-bold text-gray-900 group" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                        <span class="text-lg">Apakah saya bisa mengubah data undangan setelah selesai dibuat?</span>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="border-2 border-gray-100 rounded-lg dark:border-gray-700 animate-fadeInUp animation-delay-200 transition-colors hover:border-indigo-100 dark:hover:border-indigo-900">
+                    <button class="flex items-center justify-between w-full p-8 text-left group" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <h1 class="font-semibold text-gray-700 dark:text-white group-hover:text-indigo-600 transition-colors">Apakah saya bisa mengubah data undangan setelah selesai dibuat?</h1>
+
+                        <span class="text-white bg-indigo-500 rounded-full flex-shrink-0 ml-4 p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </span>
                     </button>
-                    <div class="hidden mt-4 text-gray-600 leading-relaxed pr-8">
-                        Tentu saja! Setelah Anda mendaftar dan membayar, Anda akan mendapatkan akses ke Dashboard khusus. Di sana Anda bisa mengedit nama, tanggal, lokasi, hingga foto galeri kapanpun tanpa batasan revisi.
+
+                    <div class="hidden transition-all duration-300">
+                        <hr class="border-gray-200 dark:border-gray-700">
+                        <p class="p-8 text-sm md:text-base text-gray-500 dark:text-gray-300 leading-relaxed">
+                            Tentu saja! Setelah Anda mendaftar dan membayar, Anda akan mendapatkan akses ke Dashboard khusus. Di sana Anda bisa mengedit nama, tanggal, lokasi, hingga foto galeri kapanpun tanpa batasan revisi.
+                        </p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 3 -->
-                <div class="border-2 border-gray-100 rounded-2xl p-6 hover:border-indigo-100 transition-colors animate-fadeInUp animation-delay-400">
-                    <button class="flex justify-between items-center w-full text-left font-bold text-gray-900 group" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                        <span class="text-lg">Berapa batas maksimal foto yang bisa di-upload?</span>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="border-2 border-gray-100 rounded-lg dark:border-gray-700 animate-fadeInUp animation-delay-400 transition-colors hover:border-indigo-100 dark:hover:border-indigo-900">
+                    <button class="flex items-center justify-between w-full p-8 text-left group" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <h1 class="font-semibold text-gray-700 dark:text-white group-hover:text-indigo-600 transition-colors">Berapa batas maksimal foto yang bisa di-upload?</h1>
+
+                        <span class="text-white bg-indigo-500 rounded-full flex-shrink-0 ml-4 p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </span>
                     </button>
-                    <div class="hidden mt-4 text-gray-600 leading-relaxed pr-8">
-                        Kami tidak membatasi jumlah foto yang dapat Anda unggah! Anda bisa memasukkan puluhan foto pre-wedding Anda ke dalam galeri undangan digital selama akun masih aktif.
+
+                    <div class="hidden transition-all duration-300">
+                        <hr class="border-gray-200 dark:border-gray-700">
+                        <p class="p-8 text-sm md:text-base text-gray-500 dark:text-gray-300 leading-relaxed">
+                            Kami tidak membatasi jumlah foto yang dapat Anda unggah! Anda bisa memasukkan puluhan foto pre-wedding Anda ke dalam galeri undangan digital selama akun masih aktif.
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-12 text-center text-sm font-medium text-gray-500">
-                Masih punya pertanyaan? <a href="https://wa.me/6282220312195" target="_blank" class="text-indigo-600 hover:text-indigo-700 font-bold underline decoration-2 decoration-indigo-200 underline-offset-4">Tanya Admin via WhatsApp</a>
+
+            <div class="mt-12 text-center text-sm font-medium text-gray-500 dark:text-gray-400 animate-fadeInUp animation-delay-600">
+                Masih punya pertanyaan? <a href="https://wa.me/6282220312195" target="_blank" class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-bold underline decoration-2 decoration-indigo-200 dark:decoration-indigo-800 underline-offset-4">Tanya Admin via WhatsApp</a>
             </div>
         </div>
     </section>
@@ -712,6 +731,37 @@
     const btnDesktop = document.getElementById('btnDesktop');
     const btnOrder = document.getElementById('btnOrderTheme');
     const mainNav = document.getElementById('mainNav');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    // Mobile Menu Toggle
+    if (mobileMenuBtn && mobileMenuPanel) {
+        mobileMenuBtn.addEventListener('click', () => {
+            const isHidden = mobileMenuPanel.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenuPanel.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenuPanel.classList.remove('opacity-0', '-translate-y-2');
+                    mobileMenuPanel.classList.add('opacity-100', 'translate-y-0');
+                }, 10);
+                mobileMenuBtn.innerHTML = '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                mobileMenuPanel.classList.add('opacity-0', '-translate-y-2');
+                mobileMenuPanel.classList.remove('opacity-100', 'translate-y-0');
+                setTimeout(() => {
+                    mobileMenuPanel.classList.add('hidden');
+                }, 300);
+                mobileMenuBtn.innerHTML = '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.click();
+            });
+        });
+    }
 
     let lastScroll = 0;
     window.addEventListener('scroll', () => {
@@ -731,8 +781,12 @@
     window.hideLoader = function () {
         if (loader) {
             loader.classList.add('opacity-0');
-            setTimeout(() => loader.classList.add('hidden'), 150); // Dipercepat dari 300 ke 150ms
+            setTimeout(() => loader.classList.add('hidden'), 150);
         }
+    };
+
+    window.onFrameLoad = function () {
+        window.hideLoader();
     };
 
     window.openPreview = function (url) {
@@ -748,9 +802,6 @@
 
         if (frame) {
             frame.src = url;
-            frame.onload = function () {
-                if (window.hideLoader) window.hideLoader();
-            };
         }
 
         if (btnOrder && url) {
@@ -777,19 +828,20 @@
 
         if (type === 'mobile') {
             frameWrapper.className =
-                "relative transition-all duration-700 ease-in-out shadow-2xl bg-gray-800 border-[14px] border-gray-900 rounded-[3rem] overflow-hidden";
-            frameWrapper.style.width = "375px";
-            frameWrapper.style.height = "812px";
-            frame.className = "w-full h-full bg-white rounded-[2rem]";
+                "relative transition-all duration-700 ease-in-out shadow-2xl bg-gray-800 border-[8px] sm:border-[14px] border-gray-900 rounded-[2rem] sm:rounded-[3rem] overflow-hidden flex flex-col";
+            frameWrapper.style.width = "min(375px, 95vw)";
+            frameWrapper.style.height = "min(812px, calc(100vh - 130px))";
+            frameWrapper.style.maxWidth = "none";
+            frame.className = "w-full h-full bg-white rounded-[1.5rem] sm:rounded-[2rem] flex-grow";
             if (phoneNotch) phoneNotch.classList.remove('hidden');
             highlightBtn(btnMobile, btnDesktop);
         } else {
             frameWrapper.className =
-                "relative transition-all duration-700 ease-in-out shadow-2xl bg-white border-0 rounded-2xl overflow-hidden";
+                "relative transition-all duration-700 ease-in-out shadow-2xl bg-white border-0 rounded-2xl overflow-hidden flex flex-col";
             frameWrapper.style.width = "90%";
-            frameWrapper.style.height = "90%";
+            frameWrapper.style.height = "calc(100vh - 130px)";
             frameWrapper.style.maxWidth = "1400px";
-            frame.className = "w-full h-full bg-white";
+            frame.className = "w-full h-full bg-white flex-grow";
             if (phoneNotch) phoneNotch.classList.add('hidden');
             highlightBtn(btnDesktop, btnMobile);
         }
@@ -814,7 +866,7 @@
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
-            if (href !== '#' && href.length > 1) {
+            if (href && href.startsWith('#') && href !== '#' && href.length > 1) {
                 e.preventDefault();
                 const target = document.querySelector(href);
                 if (target) {

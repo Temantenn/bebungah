@@ -8,6 +8,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\WilayahController;
 
 Route::get('/storage/invitations/{uuid}/{filename}', function ($uuid, $filename) {
     $path = "public/invitations/{$uuid}/{$filename}";
@@ -43,6 +44,14 @@ Route::get('/undangan/{slug}', [InvitationController::class, 'show'])->name('inv
 Route::middleware('throttle:10,1')->group(function () {
     Route::post('/kirim-ucapan', [InvitationController::class, 'kirimUcapan'])->name('kirim.ucapan');
     Route::post('/rsvp/{id}', [InvitationController::class, 'submitRSVP'])->name('invitation.rsvp');
+});
+
+// API Wilayah Indonesia (proxy ke emsifa, dengan cache)
+Route::prefix('api/wilayah')->middleware('throttle:60,1')->group(function () {
+    Route::get('/provinces', [WilayahController::class, 'provinces'])->name('wilayah.provinces');
+    Route::get('/regencies/{province_id}', [WilayahController::class, 'regencies'])->name('wilayah.regencies');
+    Route::get('/districts/{regency_id}', [WilayahController::class, 'districts'])->name('wilayah.districts');
+    Route::get('/villages/{district_id}', [WilayahController::class, 'villages'])->name('wilayah.villages');
 });
 
 require __DIR__ . '/auth.php';

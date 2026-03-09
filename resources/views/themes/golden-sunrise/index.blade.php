@@ -390,7 +390,14 @@
 
                             <div class="mt-6 pt-6 border-t border-sage-light/20 mx-auto max-w-[250px]">
                                 <p class="text-ink font-bold text-sm mb-1">{{ $acara['tempat'] ?? 'Lokasi Acara' }}</p>
-                                <p class="text-xs text-sage-dark mb-6 leading-relaxed">{{ $acara['alamat'] ?? '-' }}</p>
+                                <p class="text-xs text-sage-dark mb-1 leading-relaxed">{{ $acara['alamat'] ?? '' }}</p>
+                                @php
+                                    $acaraW = $acara['wilayah'] ?? [];
+                                    $acaraL1 = collect([!empty($acaraW['village']) ? 'Kel. '.Str::title(strtolower($acaraW['village'])) : null, !empty($acaraW['district']) ? 'Kec. '.Str::title(strtolower($acaraW['district'])) : null])->filter()->implode(', ');
+                                    $acaraL2 = collect([!empty($acaraW['regency']) ? Str::title(strtolower($acaraW['regency'])) : null, !empty($acaraW['province']) ? Str::title(strtolower($acaraW['province'])) : null])->filter()->implode(', ');
+                                @endphp
+                                @if($acaraL1)<p class="text-xs text-sage-dark mb-0 leading-relaxed">{{ $acaraL1 }}</p>@endif
+                                @if($acaraL2)<p class="text-xs text-sage-dark mb-6 leading-relaxed">{{ $acaraL2 }}</p>@else<span class="mb-6 block"></span>@endif
                                 
                                 @if(isset($acara['maps']))
                                 <a href="{{ $acara['maps'] }}" target="_blank" class="inline-block border border-gold text-gold px-6 py-2 text-[10px] tracking-widest uppercase hover:bg-gold hover:text-white transition rounded-full font-semibold">

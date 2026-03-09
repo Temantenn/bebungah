@@ -10,11 +10,7 @@
 
             {{-- ALERTS --}}
             @if(session('success'))
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-300 px-5 py-4 rounded-xl shadow flex items-center gap-3 animate-slideDown" role="alert">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    <span class="font-medium">{{ session('success') }}</span>
-                    <button onclick="this.parentElement.remove()" class="ml-auto text-green-600 hover:text-green-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-                </div>
+                <x-alert-success :message="session('success')" />
             @endif
             @if($errors->any())
                 <div class="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-300 px-5 py-4 rounded-xl shadow" role="alert">
@@ -181,23 +177,23 @@
                                 <p class="text-xs text-gray-500">Input manual per tamu</p>
                             </div>
                         </div>
-                        <form action="{{ route('client.storeGuest') }}" method="POST" class="space-y-3">
+                        <form action="{{ route('client.storeGuest') }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Nama Tamu <span class="text-red-500">*</span></label>
-                                <input type="text" name="name" required class="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition px-3 py-2.5 text-sm" placeholder="Budi Santoso">
+                                <label class="text-gray-700 dark:text-gray-200">Nama Tamu <span class="text-red-500">*</span></label>
+                                <input type="text" name="name" required class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring transition-colors" placeholder="Budi Santoso">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">No. WhatsApp</label>
-                                <div class="flex">
-                                    <span class="inline-flex items-center px-3 border-2 border-r-0 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 rounded-l-xl text-sm">+62</span>
-                                    <input type="text" name="whatsapp" class="flex-1 rounded-r-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition px-3 py-2.5 text-sm" placeholder="8123456789">
+                                <label class="text-gray-700 dark:text-gray-200">No. WhatsApp</label>
+                                <div class="flex mt-2">
+                                    <span class="inline-flex items-center px-4 py-2 text-gray-700 bg-gray-50 border border-r-0 border-gray-200 rounded-l-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600">+62</span>
+                                    <input type="text" name="whatsapp" class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-r-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring transition-colors" placeholder="8123456789">
                                 </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Kategori</label>
-                                    <select name="category" class="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 px-3 py-2.5 text-sm">
+                                    <label class="text-gray-700 dark:text-gray-200">Kategori</label>
+                                    <select name="category" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring transition-colors">
                                         <option>Umum</option>
                                         <option>Keluarga</option>
                                         <option>Teman</option>
@@ -205,14 +201,26 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Kota</label>
-                                    <input type="text" name="address" class="w-full rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 transition px-3 py-2.5 text-sm" placeholder="Jakarta">
+                                    <label class="text-gray-700 dark:text-gray-200">Provinsi</label>
+                                    <select id="tamu_province" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring transition-colors">
+                                        <option value="">-- Provinsi --</option>
+                                    </select>
                                 </div>
                             </div>
-                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl text-sm font-bold shadow transition hover:scale-[1.02] flex justify-center items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                Simpan Tamu
-                            </button>
+                            <div>
+                                <label class="text-gray-700 dark:text-gray-200">Kab / Kota</label>
+                                <select id="tamu_regency" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring transition-colors" disabled>
+                                    <option value="">-- Pilih Provinsi dulu --</option>
+                                </select>
+                                <input type="hidden" name="address" id="tamu_address_val">
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="submit" class="w-full px-8 py-2.5 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600 flex justify-center items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    Simpan Tamu
+                                </button>
+                            </div>
                         </form>
                     </div>
 
@@ -239,7 +247,7 @@
                                 <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 <p class="text-xs text-green-700 dark:text-green-300 font-medium truncate" id="fileNameText"></p>
                             </div>
-                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl text-sm font-bold shadow transition hover:scale-[1.02] flex justify-center items-center gap-2">
+                            <button type="submit" class="w-full px-8 py-2.5 mt-2 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600 flex justify-center items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                 Import Data Tamu
                             </button>
@@ -273,15 +281,15 @@
                                     <p class="text-xs text-gray-500" id="guestCountDisplay">{{ count($guests ?? []) }} tamu</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2">
+                            <div class="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-3 sm:mt-0">
                                 {{-- Search --}}
-                                <div class="relative">
+                                <div class="relative w-full sm:w-auto flex-1 sm:flex-initial">
                                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                    <input type="text" id="guestSearch" onkeyup="filterGuests()" placeholder="Cari tamu..." class="pl-9 pr-4 py-2 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition w-40">
+                                    <input type="text" id="guestSearch" onkeyup="filterGuests()" placeholder="Cari tamu..." class="pl-9 pr-4 py-2 w-full sm:w-40 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition">
                                 </div>
                                 {{-- Filter RSVP --}}
-                                <select id="rsvpFilter" onchange="filterGuests()" class="border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl text-sm px-3 py-2 focus:border-indigo-400 outline-none transition">
-                                    <option value="">Semua</option>
+                                <select id="rsvpFilter" onchange="filterGuests()" class="w-full sm:w-auto border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl text-sm px-3 py-2 flex-1 sm:flex-initial focus:border-indigo-400 outline-none transition">
+                                    <option value="">Semua RSVP</option>
                                     <option value="hadir">Hadir</option>
                                     <option value="tidak_hadir">Tidak Hadir</option>
                                     <option value="pending">Pending</option>
@@ -467,6 +475,124 @@
             document.querySelectorAll('[role="alert"]').forEach(el => {
                 setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(-10px)'; el.style.transition = 'all 0.3s'; setTimeout(() => el.remove(), 300); }, 5000);
             });
+
+            // Inisialisasi dropdown provinsi untuk form tambah tamu
+            initTamuProvince();
         });
+
+        async function initTamuProvince() {
+            const provEl = document.getElementById('tamu_province');
+            const regEl  = document.getElementById('tamu_regency');
+            if (!provEl) return;
+
+            try {
+                const res = await fetch('/api/wilayah/provinces');
+                const provinces = await res.json();
+                provinces.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.name;
+                    provEl.appendChild(opt);
+                });
+            } catch(e) { console.error(e); }
+
+            provEl.addEventListener('change', async function() {
+                regEl.innerHTML = '<option value="">-- Pilih Kab/Kota --</option>';
+                regEl.disabled = true;
+                document.getElementById('tamu_address_val').value = '';
+                if (!this.value) return;
+                try {
+                    const res = await fetch('/api/wilayah/regencies/' + this.value);
+                    const regencies = await res.json();
+                    regencies.forEach(r => {
+                        const opt = document.createElement('option');
+                        opt.value = r.id;
+                        opt.textContent = r.name;
+                        regEl.appendChild(opt);
+                    });
+                    regEl.disabled = false;
+                } catch(e) { console.error(e); }
+            });
+
+            regEl.addEventListener('change', function() {
+                const provName = provEl.options[provEl.selectedIndex]?.text || '';
+                const regName  = this.options[this.selectedIndex]?.text || '';
+                const val = [regName, provName].filter(Boolean).join(', ');
+                document.getElementById('tamu_address_val').value = val;
+            });
+        }
     </script>
+
+    {{-- ═══ WELCOME MODAL (tampil sekali saja) ═══ --}}
+    @if(isset($invitation))
+    <div id="welcomeModal" class="welcome-modal-overlay" style="display:none;">
+        <div class="welcome-modal-box">
+            <div class="welcome-confetti">🎊</div>
+            <div class="welcome-confetti-r">🎉</div>
+            <div class="welcome-icon-wrap"><div class="welcome-icon">💍</div></div>
+            <h2 class="welcome-title">Selamat Datang! 🎉</h2>
+            <p class="welcome-names">
+                {{ $invitation->content['mempelai']['pria']['panggilan'] ?? 'Mempelai' }}
+                <span class="welcome-amp">&</span>
+                {{ $invitation->content['mempelai']['wanita']['panggilan'] ?? 'Mempelai' }}
+            </p>
+            <p class="welcome-msg">
+                Terima kasih telah mempercayakan undangan digital pernikahan Anda kepada kami. 🙏<br><br>
+                Undangan Anda sudah aktif dan siap dikustomisasi. Semoga hari istimewa Anda penuh kebahagiaan dan keberkahan. 🌸
+            </p>
+            <div class="welcome-divider"><span>✦</span><span>✦</span><span>✦</span></div>
+            <div class="welcome-tips">
+                <p class="welcome-tips-title">Mulai dari mana?</p>
+                <div class="welcome-tip-item"><span class="tip-icon">✏️</span><span>Lengkapi data mempelai & acara di <strong>Pengaturan</strong></span></div>
+                <div class="welcome-tip-item"><span class="tip-icon">📸</span><span>Upload foto dan pilih musik favorit</span></div>
+                <div class="welcome-tip-item"><span class="tip-icon">🔗</span><span>Bagikan link undangan ke para tamu</span></div>
+            </div>
+            <button onclick="closeWelcomeModal()" class="welcome-close-btn">Mulai Sekarang 🚀</button>
+        </div>
+    </div>
+    <style>
+        .welcome-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;animation:wFadeIn 0.3s ease;}
+        @keyframes wFadeIn{from{opacity:0;}to{opacity:1;}}
+        .welcome-modal-box{background:white;border-radius:2rem;padding:2.5rem 2rem;max-width:26rem;width:100%;text-align:center;position:relative;box-shadow:0 30px 60px -12px rgba(0,0,0,0.3);animation:wSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);overflow:hidden;}
+        .dark .welcome-modal-box{background:#111827;}
+        @keyframes wSlideUp{from{opacity:0;transform:translateY(30px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+        .welcome-confetti{position:absolute;top:1rem;left:1.5rem;font-size:2rem;animation:wSway 3s ease-in-out infinite;}
+        .welcome-confetti-r{position:absolute;top:1rem;right:1.5rem;font-size:2rem;animation:wSway 3s ease-in-out infinite reverse;}
+        @keyframes wSway{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(10deg);}}
+        .welcome-icon-wrap{width:5rem;height:5rem;background:linear-gradient(135deg,#6366f1,#ec4899);border-radius:1.5rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;box-shadow:0 10px 25px -5px rgba(99,102,241,0.4);}
+        .welcome-icon{font-size:2.2rem;}
+        .welcome-title{font-size:1.6rem;font-weight:800;color:#1f2937;margin-bottom:0.25rem;}
+        .dark .welcome-title{color:white;}
+        .welcome-names{font-family:'Georgia',serif;font-size:1.1rem;font-style:italic;color:#6366f1;font-weight:600;margin-bottom:1rem;}
+        .welcome-amp{margin:0 0.4rem;color:#ec4899;}
+        .welcome-msg{font-size:0.875rem;color:#6b7280;line-height:1.75;margin-bottom:1.25rem;}
+        .dark .welcome-msg{color:#9ca3af;}
+        .welcome-divider{display:flex;justify-content:center;gap:0.5rem;color:#d1d5db;margin-bottom:1.25rem;font-size:0.8rem;}
+        .welcome-tips{background:#f9fafb;border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.5rem;text-align:left;}
+        .dark .welcome-tips{background:#1f2937;}
+        .welcome-tips-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280;margin-bottom:0.75rem;}
+        .welcome-tip-item{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.5rem;font-size:0.85rem;color:#374151;}
+        .dark .welcome-tip-item{color:#d1d5db;}
+        .tip-icon{font-size:1rem;flex-shrink:0;}
+        .welcome-close-btn{width:100%;padding:1rem;border-radius:0.875rem;border:none;cursor:pointer;background:linear-gradient(135deg,#6366f1,#ec4899);color:white;font-weight:700;font-size:1rem;letter-spacing:0.025em;box-shadow:0 8px 20px -4px rgba(99,102,241,0.4);transition:all 0.2s;}
+        .welcome-close-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -4px rgba(99,102,241,0.5);}
+    </style>
+    <script>
+        (function(){
+            var key='wp_{{ auth()->id() }}';
+            if(!localStorage.getItem(key)){
+                document.getElementById('welcomeModal').style.display='flex';
+            }
+        })();
+        function closeWelcomeModal(){
+            var key='wp_{{ auth()->id() }}';
+            localStorage.setItem(key,'1');
+            var el=document.getElementById('welcomeModal');
+            el.style.opacity='0';
+            el.style.transition='opacity 0.3s';
+            setTimeout(function(){el.style.display='none';},300);
+        }
+    </script>
+    @endif
+
 </x-app-layout>

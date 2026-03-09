@@ -188,7 +188,14 @@
                         <p class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider mb-6">{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now()->addDays(20))->translatedFormat('l, d F Y') }}</p>
                         <div class="space-y-2 text-sm text-gray-300 mb-6">
                             <p><i class="ph-fill ph-clock mr-2"></i> {{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? '09:00')->format('H:i') }} WIB</p>
-                            <p class="px-8 leading-relaxed">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Emerald Garden Hall' }} <br> {{ $invitation->content['acara']['akad']['alamat'] ?? 'Jl. Permata Hijau No. 10, Jakarta' }}</p>
+                            <p class="px-8 leading-relaxed">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Emerald Garden Hall' }} <br> {{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
+                            @php
+                                $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                                $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                                $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                            @endphp
+                            @if($akadL1)<p class="px-8 text-xs text-gray-400">{{ $akadL1 }}</p>@endif
+                            @if($akadL2)<p class="px-8 text-xs text-gray-400">{{ $akadL2 }}</p>@endif
                         </div>
                         <a href="{{ $invitation->content['acara']['akad']['maps'] ?? '#' }}" class="inline-block border-b border-[#D4AF37] text-[#D4AF37] text-xs uppercase tracking-widest pb-1">Open Map</a>
                     </div>
@@ -198,7 +205,14 @@
                         <p class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider mb-6">{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now()->addDays(20))->translatedFormat('l, d F Y') }}</p>
                         <div class="space-y-2 text-sm text-gray-300 mb-6">
                             <p><i class="ph-fill ph-clock mr-2"></i> {{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? '11:00')->format('H:i') }} WIB</p>
-                            <p class="px-8 leading-relaxed">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Grand Ballroom Emerald' }} <br> {{ $invitation->content['acara']['resepsi']['alamat'] ?? 'Jl. Permata Hijau No. 10, Jakarta' }}</p>
+                            <p class="px-8 leading-relaxed">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Grand Ballroom Emerald' }} <br> {{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
+                            @php
+                                $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                                $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                                $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                            @endphp
+                            @if($resepsiL1)<p class="px-8 text-xs text-gray-400">{{ $resepsiL1 }}</p>@endif
+                            @if($resepsiL2)<p class="px-8 text-xs text-gray-400">{{ $resepsiL2 }}</p>@endif
                         </div>
                         <a href="{{ $invitation->content['acara']['resepsi']['maps'] ?? '#' }}" class="inline-block border-b border-[#D4AF37] text-[#D4AF37] text-xs uppercase tracking-widest pb-1">Open Map</a>
                     </div>

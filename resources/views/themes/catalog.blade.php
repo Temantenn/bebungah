@@ -74,6 +74,8 @@
             min-height: 100vh;
             color: var(--gray-800);
             line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
         }
 
         .hero {
@@ -184,6 +186,14 @@
             padding: 0.375rem;
             border-radius: 50px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            max-width: 100%;
+        }
+
+        .filter-tabs::-webkit-scrollbar { 
+            display: none; 
         }
 
         .filter-tab {
@@ -196,6 +206,8 @@
             transition: all 0.2s;
             border: none;
             background: transparent;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .filter-tab:hover { color: var(--primary); }
@@ -622,6 +634,13 @@
             border-top: 1px solid var(--gray-800);
         }
 
+        .filter-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
             .navbar-nav { display: none; }
 
@@ -631,11 +650,21 @@
             .stat-number { font-size: 1.5rem; }
 
             .filter-bar { flex-direction: column; align-items: stretch; }
-            .filter-tabs { overflow-x: auto; }
-            .filter-search { justify-content: center; }
+            .filter-tabs { overflow-x: auto; padding-bottom: 0.5rem; }
+            
+            .filter-actions {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            
+            .filter-search { justify-content: flex-start; width: 100%; }
             .filter-search input { width: 100%; }
+            
+            .custom-dropdown { width: 100%; min-width: 100%; }
+            .custom-dropdown .dropdown-trigger { width: 100%; justify-content: space-between; }
 
-            .themes-grid { grid-template-columns: 1fr; }
+            .themes-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .theme-card-image { aspect-ratio: 4/5; }
 
             .cta-title { font-size: 1.5rem; }
@@ -737,13 +766,34 @@
 
             <div class="flex items-center gap-4">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 transition-all duration-300 hover:scale-105">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 hidden md:block transition-all duration-300 hover:scale-105">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-bold text-gray-700 hover:text-indigo-600 hidden md:block transition-all duration-300 hover:scale-105">Masuk</a>
                 @endauth
-                <a href="{{ route('order.create') }}" class="btn-primary relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:scale-105 transition-all duration-300">
+                <a href="{{ route('order.create') }}" class="btn-primary relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-full text-[10px] sm:text-xs md:text-sm font-bold shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:scale-105 transition-all duration-300 whitespace-nowrap">
                     <span class="relative z-10">Buat Undangan</span>
                 </a>
+                <!-- Mobile Menu Button -->
+                <button type="button" id="mobileMenuBtn" class="md:hidden text-gray-700 hover:text-indigo-600 p-2 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobileMenuPanel" class="hidden md:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 origin-top transform transition-all duration-300 opacity-0 -translate-y-2">
+            <div class="px-6 py-4 space-y-4">
+                <a href="{{ route('home') }}" class="block w-full text-gray-700 font-semibold hover:text-indigo-600 py-2 mobile-link">Beranda</a>
+                <a href="{{ route('themes.index') }}" class="block w-full text-indigo-600 font-bold py-2 mobile-link">Katalog Tema</a>
+                <a href="{{ route('order.create') }}" class="block w-full text-gray-700 font-semibold hover:text-indigo-600 py-2 mobile-link">Pesan Sekarang</a>
+                <div class="h-px bg-gray-100 my-2"></div>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="block w-full text-center text-gray-700 font-bold hover:text-indigo-600 py-2 border-2 border-gray-200 rounded-full">Dashboard Menu</a>
+                @else
+                    <a href="{{ route('login') }}" class="block w-full text-center text-gray-700 font-bold hover:text-indigo-600 py-2 border-2 border-gray-200 rounded-full">Masuk Akun</a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -785,7 +835,7 @@
             <button class="filter-tab" data-filter="dark" style="color:#9333ea;">🌙 Dark <span id="cnt-dark" class="ml-1 text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full font-bold"></span></button>
             <button class="filter-tab" data-filter="traditional" style="color:#92400e;">🏛️ Jawa <span id="cnt-traditional" class="ml-1 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-bold"></span></button>
         </div>
-        <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+        <div class="filter-actions">
             <div class="filter-search">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" id="searchInput" placeholder="Cari tema favorit...">
@@ -1119,14 +1169,6 @@
 
         window.onFrameLoad = function () {
             window.hideLoader();
-            setTimeout(() => {
-                try {
-                    const doc = frame.contentWindow.document;
-                    // Try to click the 'Buka Undangan' button automatically
-                    const openBtn = doc.querySelector('.btn-open, [onclick*="openInvitation"], [onclick*="buka"], [onclick*="openSurat"]');
-                    if (openBtn) openBtn.click();
-                } catch (e) { /* cross-origin or missing — ignored */ }
-            }, 100);
         };
 
         window.openPreview = function (url, themeName) {
@@ -1173,12 +1215,14 @@
             if (type === 'mobile') {
                 frameWrapper.style.cssText = `
                     border-radius: 44px;
-                    border: 12px solid #111;
+                    border: 8px solid #111;
                     box-shadow: 0 0 0 1px #333, 0 40px 80px rgba(0,0,0,0.6);
                     overflow: hidden;
                     transition: all 0.4s ease;
+                    width: min(375px, 95vw);
+                    margin: 0 auto;
                 `;
-                frame.style.cssText = `width:375px; height:${vhFrame}; border-radius:32px; display:block;`;
+                frame.style.cssText = `width: 100%; height:${vhFrame}; border-radius:32px; display:block;`;
                 if (chromeTop) chromeTop.style.display = 'block';
                 if (chromeBot) chromeBot.style.display = 'flex';
                 // Highlight buttons
@@ -1191,8 +1235,10 @@
                     box-shadow: 0 40px 80px rgba(0,0,0,0.5);
                     overflow: hidden;
                     transition: all 0.4s ease;
+                    width: min(1200px, 92vw);
+                    margin: 0 auto;
                 `;
-                frame.style.cssText = `width:min(1200px,92vw); height:${vhFrame}; border-radius:0; display:block;`;
+                frame.style.cssText = `width: 100%; height:${vhFrame}; border-radius:0; display:block;`;
                 if (chromeTop) chromeTop.style.display = 'none';
                 if (chromeBot) chromeBot.style.display = 'none';
                 btnDesktop.className = 'px-3 py-2 rounded-lg text-xs font-semibold text-indigo-300 bg-indigo-600/30 border border-indigo-500/40 transition-all flex items-center gap-1.5';
@@ -1350,6 +1396,38 @@
         });
 
         const mainNav = document.getElementById('mainNav');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        
+        // Mobile Menu Toggle
+        if (mobileMenuBtn && mobileMenuPanel) {
+            mobileMenuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenuPanel.classList.contains('hidden');
+                if (isHidden) {
+                    mobileMenuPanel.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobileMenuPanel.classList.remove('opacity-0', '-translate-y-2');
+                        mobileMenuPanel.classList.add('opacity-100', 'translate-y-0');
+                    }, 10);
+                    mobileMenuBtn.innerHTML = '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                } else {
+                    mobileMenuPanel.classList.add('opacity-0', '-translate-y-2');
+                    mobileMenuPanel.classList.remove('opacity-100', 'translate-y-0');
+                    setTimeout(() => {
+                        mobileMenuPanel.classList.add('hidden');
+                    }, 300);
+                    mobileMenuBtn.innerHTML = '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                }
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuBtn.click();
+                });
+            });
+        }
+
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
 

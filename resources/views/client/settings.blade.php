@@ -18,20 +18,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
             @if(session('success'))
-            <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" class="bg-gradient-to-r from-emerald-500 to-green-500 text-white p-5 rounded-2xl shadow-xl shadow-green-500/25 flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <div>
-                        <p class="font-bold text-lg">Berhasil Disimpan!</p>
-                        <p class="text-white/80 text-sm">Perubahan telah tersimpan dengan sukses</p>
-                    </div>
-                </div>
-                <button @click="show = false" class="w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
+                <x-alert-success :message="session('success')" />
             @endif
 
             @if ($errors->any())
@@ -97,10 +84,7 @@
                                     </div>
                                     <div class="input-group">
                                         <label class="input-label">Instagram</label>
-                                        <div class="relative">
-                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">@</span>
-                                            <input type="text" name="groom_instagram" value="{{ $invitation->content['mempelai']['pria']['instagram'] ?? '' }}" class="input-field pl-8" placeholder="username">
-                                        </div>
+                                        <input type="text" name="groom_instagram" value="{{ $invitation->content['mempelai']['pria']['instagram'] ?? '' }}" class="input-field" placeholder="@username">
                                     </div>
                                 </div>
                                 <div class="input-group">
@@ -144,10 +128,7 @@
                                     </div>
                                     <div class="input-group">
                                         <label class="input-label">Instagram</label>
-                                        <div class="relative">
-                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">@</span>
-                                            <input type="text" name="bride_instagram" value="{{ $invitation->content['mempelai']['wanita']['instagram'] ?? '' }}" class="input-field pl-8" placeholder="username">
-                                        </div>
+                                        <input type="text" name="bride_instagram" value="{{ $invitation->content['mempelai']['wanita']['instagram'] ?? '' }}" class="input-field" placeholder="@username">
                                     </div>
                                 </div>
                                 <div class="input-group">
@@ -201,11 +182,42 @@
                                     <input type="datetime-local" name="akad_datetime" value="{{ isset($invitation->content['acara']['akad']['waktu']) ? \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'])->format('Y-m-d\TH:i') : '' }}" class="input-field">
                                 </div>
                                 <div class="input-group">
-                                    <label class="input-label">Lokasi</label>
+                                    <label class="input-label">Lokasi (Nama Tempat / Venue)</label>
                                     <input type="text" name="akad_location" value="{{ $invitation->content['acara']['akad']['tempat'] ?? '' }}" class="input-field" placeholder="Masjid Agung">
                                 </div>
+                                {{-- Wilayah Akad --}}
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="input-group">
+                                        <label class="input-label">Provinsi</label>
+                                        <select id="akad_province" class="input-field wilayah-province" data-target="akad" data-saved="{{ $invitation->content['acara']['akad']['wilayah']['province'] ?? '' }}">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                        </select>
+                                        <input type="hidden" name="akad_province_name" id="akad_province_name" value="{{ $invitation->content['acara']['akad']['wilayah']['province'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kab / Kota</label>
+                                        <select id="akad_regency" class="input-field" data-saved="{{ $invitation->content['acara']['akad']['wilayah']['regency'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kab/Kota --</option>
+                                        </select>
+                                        <input type="hidden" name="akad_regency_name" id="akad_regency_name" value="{{ $invitation->content['acara']['akad']['wilayah']['regency'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kecamatan</label>
+                                        <select id="akad_district" class="input-field" data-saved="{{ $invitation->content['acara']['akad']['wilayah']['district'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                        <input type="hidden" name="akad_district_name" id="akad_district_name" value="{{ $invitation->content['acara']['akad']['wilayah']['district'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kelurahan / Desa</label>
+                                        <select id="akad_village" class="input-field" data-saved="{{ $invitation->content['acara']['akad']['wilayah']['village'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kelurahan --</option>
+                                        </select>
+                                        <input type="hidden" name="akad_village_name" id="akad_village_name" value="{{ $invitation->content['acara']['akad']['wilayah']['village'] ?? '' }}">
+                                    </div>
+                                </div>
                                 <div class="input-group">
-                                    <label class="input-label">Alamat Lengkap</label>
+                                    <label class="input-label">Alamat Lengkap (Detail Jalan / Gedung)</label>
                                     <textarea name="akad_address" rows="2" class="input-field">{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</textarea>
                                 </div>
                                 <div class="input-group">
@@ -233,11 +245,42 @@
                                     <input type="datetime-local" name="resepsi_datetime" value="{{ isset($invitation->content['acara']['resepsi']['waktu']) ? \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'])->format('Y-m-d\TH:i') : '' }}" class="input-field">
                                 </div>
                                 <div class="input-group">
-                                    <label class="input-label">Lokasi</label>
+                                    <label class="input-label">Lokasi (Nama Tempat / Venue)</label>
                                     <input type="text" name="resepsi_location" value="{{ $invitation->content['acara']['resepsi']['tempat'] ?? '' }}" class="input-field" placeholder="Hotel...">
                                 </div>
+                                {{-- Wilayah Resepsi --}}
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="input-group">
+                                        <label class="input-label">Provinsi</label>
+                                        <select id="resepsi_province" class="input-field wilayah-province" data-target="resepsi" data-saved="{{ $invitation->content['acara']['resepsi']['wilayah']['province'] ?? '' }}">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                        </select>
+                                        <input type="hidden" name="resepsi_province_name" id="resepsi_province_name" value="{{ $invitation->content['acara']['resepsi']['wilayah']['province'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kab / Kota</label>
+                                        <select id="resepsi_regency" class="input-field" data-saved="{{ $invitation->content['acara']['resepsi']['wilayah']['regency'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kab/Kota --</option>
+                                        </select>
+                                        <input type="hidden" name="resepsi_regency_name" id="resepsi_regency_name" value="{{ $invitation->content['acara']['resepsi']['wilayah']['regency'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kecamatan</label>
+                                        <select id="resepsi_district" class="input-field" data-saved="{{ $invitation->content['acara']['resepsi']['wilayah']['district'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                        <input type="hidden" name="resepsi_district_name" id="resepsi_district_name" value="{{ $invitation->content['acara']['resepsi']['wilayah']['district'] ?? '' }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Kelurahan / Desa</label>
+                                        <select id="resepsi_village" class="input-field" data-saved="{{ $invitation->content['acara']['resepsi']['wilayah']['village'] ?? '' }}" disabled>
+                                            <option value="">-- Pilih Kelurahan --</option>
+                                        </select>
+                                        <input type="hidden" name="resepsi_village_name" id="resepsi_village_name" value="{{ $invitation->content['acara']['resepsi']['wilayah']['village'] ?? '' }}">
+                                    </div>
+                                </div>
                                 <div class="input-group">
-                                    <label class="input-label">Alamat Lengkap</label>
+                                    <label class="input-label">Alamat Lengkap (Detail Jalan / Gedung)</label>
                                     <textarea name="resepsi_address" rows="2" class="input-field">{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</textarea>
                                 </div>
                                 <div class="input-group">
@@ -310,10 +353,13 @@
                         </div>
                         
                         @if(isset($invitation->content['media']['gallery']) && count($invitation->content['media']['gallery']) > 0)
-                            <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mt-4">
-                                @foreach($invitation->content['media']['gallery'] as $photo)
-                                    <div class="aspect-square rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                                        <img src="{{ asset($photo) }}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                            <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mt-4" id="gallery-preview-container">
+                                @foreach($invitation->content['media']['gallery'] as $index => $photo)
+                                    <div class="relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group gallery-item" data-index="{{ $index }}">
+                                        <img src="{{ asset($photo) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                        <button type="button" onclick="deleteGalleryPhoto(this, {{ $index }})" class="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm z-10 shadow-lg" title="Hapus Foto">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
@@ -340,12 +386,15 @@
                         }
                     @endphp
 
-                    <div class="p-6 space-y-4">
+                    <div class="p-6 space-y-4" id="love-stories-container">
                         @foreach ($stories as $index => $story)
-                        <div class="story-card">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">{{ $index + 1 }}</div>
-                                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Bagian {{ $index + 1 }}</span>
+                        <div class="story-card" data-index="{{ $index }}">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md story-index-badge">{{ $index + 1 }}</div>
+                                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Bagian <span class="story-index-label">{{ $index + 1 }}</span></span>
+                                </div>
+                                <button type="button" onclick="removeStory(this)" class="text-red-500 hover:text-red-700 bg-red-50/50 hover:bg-red-100 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors">Hapus</button>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                                 <div class="md:col-span-2">
@@ -363,6 +412,13 @@
                             </div>
                         </div>
                         @endforeach
+                    </div>
+
+                    <div class="px-6 pb-6 text-center">
+                        <button type="button" onclick="addStory()" class="px-5 py-2.5 text-sm font-semibold text-pink-600 bg-pink-50/50 border border-pink-200/50 rounded-lg hover:bg-pink-100 transition-colors inline-flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Tambah Cerita Perjalanan
+                        </button>
                     </div>
                 </div>
 
@@ -413,9 +469,43 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- Wilayah Kado --}}
+                        <div class="input-group">
+                            <label class="input-label mb-2 block">Wilayah Pengiriman Kado</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="input-group">
+                                    <label class="input-label">Provinsi</label>
+                                    <select id="kado_province" class="input-field wilayah-province" data-target="kado" data-saved="{{ $invitation->content['amplop']['wilayah']['province'] ?? '' }}">
+                                        <option value="">-- Pilih Provinsi --</option>
+                                    </select>
+                                    <input type="hidden" name="kado_province_name" id="kado_province_name" value="{{ $invitation->content['amplop']['wilayah']['province'] ?? '' }}">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Kab / Kota</label>
+                                    <select id="kado_regency" class="input-field" data-saved="{{ $invitation->content['amplop']['wilayah']['regency'] ?? '' }}" disabled>
+                                        <option value="">-- Pilih Kab/Kota --</option>
+                                    </select>
+                                    <input type="hidden" name="kado_regency_name" id="kado_regency_name" value="{{ $invitation->content['amplop']['wilayah']['regency'] ?? '' }}">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Kecamatan</label>
+                                    <select id="kado_district" class="input-field" data-saved="{{ $invitation->content['amplop']['wilayah']['district'] ?? '' }}" disabled>
+                                        <option value="">-- Pilih Kecamatan --</option>
+                                    </select>
+                                    <input type="hidden" name="kado_district_name" id="kado_district_name" value="{{ $invitation->content['amplop']['wilayah']['district'] ?? '' }}">
+                                </div>
+                                <div class="input-group">
+                                    <label class="input-label">Kelurahan / Desa</label>
+                                    <select id="kado_village" class="input-field" data-saved="{{ $invitation->content['amplop']['wilayah']['village'] ?? '' }}" disabled>
+                                        <option value="">-- Pilih Kelurahan --</option>
+                                    </select>
+                                    <input type="hidden" name="kado_village_name" id="kado_village_name" value="{{ $invitation->content['amplop']['wilayah']['village'] ?? '' }}">
+                                </div>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="input-group">
-                                <label class="input-label">Alamat Kirim Kado</label>
+                                <label class="input-label">Alamat Kirim Kado (Detail Jalan)</label>
                                 <textarea name="gift_address" rows="2" class="input-field" placeholder="Jalan...">{{ $invitation->content['amplop']['alamat_kado'] ?? '' }}</textarea>
                             </div>
                             <div class="input-group">
@@ -432,8 +522,8 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400 hidden md:block">
                             <span class="inline-flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Jangan lupa simpan perubahan</span>
                         </p>
-                        <button type="submit" class="group bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-2xl shadow-xl shadow-indigo-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/40 hover:-translate-y-1 w-full md:w-auto flex items-center justify-center gap-3">
-                            <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <button type="submit" class="px-8 py-2.5 leading-5 text-white transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600 w-full md:w-auto flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             Simpan Perubahan
                         </button>
                     </div>
@@ -577,44 +667,39 @@
 
         .input-label {
             display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-            color: #6b7280;
+            color: #374151; /* text-gray-700 */
         }
         .dark .input-label {
-            color: #9ca3af;
+            color: #e5e7eb; /* text-gray-200 */
         }
 
         .input-field {
+            display: block;
             width: 100%;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            background: white;
-            color: #1f2937;
-            padding: 0.75rem 1rem;
-            font-size: 0.9375rem;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            margin-top: 0.5rem; /* mt-2 */
+            color: #374151; /* text-gray-700 */
+            background-color: #ffffff; /* bg-white */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
             transition: all 0.2s ease;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         .input-field:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            border-color: #60a5fa; /* border-blue-400 */
+            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.4); /* ring-blue-300 */
         }
         .dark .input-field {
-            background: rgb(31 41 55);
-            border-color: rgb(55 65 81);
-            color: white;
+            background-color: #1f2937; /* bg-gray-800 */
+            border-color: #4b5563; /* border-gray-600 */
+            color: #d1d5db; /* text-gray-300 */
         }
         .dark .input-field:focus {
-            border-color: #818cf8;
-            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+            border-color: #93c5fd; /* border-blue-300 */
+            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.4);
         }
         .dark .input-field::placeholder {
-            color: #6b7280;
+            color: #9ca3af;
         }
 
         .file-input {
@@ -657,6 +742,307 @@
                 }
                 reader.readAsDataURL(file);
             }
+        }
+
+        function deleteGalleryPhoto(btn, index) {
+            if(confirm('Hapus foto ini dari galeri? (Berlaku setelah klik Simpan)')) {
+                const container = document.getElementById('gallery-preview-container');
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'delete_gallery[]';
+                input.value = index;
+                container.appendChild(input);
+                
+                const item = btn.closest('.gallery-item');
+                item.style.display = 'none';
+            }
+        }
+
+        function addStory() {
+            const container = document.getElementById('love-stories-container');
+            const items = container.querySelectorAll('.story-card');
+            let maxIndex = -1;
+            items.forEach(el => {
+                const idx = parseInt(el.getAttribute('data-index'));
+                if (idx > maxIndex) maxIndex = idx;
+            });
+            const newIndex = maxIndex + 1;
+            
+            const html = `
+            <div class="story-card" data-index="${newIndex}">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md story-index-badge">${newIndex + 1}</div>
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Bagian <span class="story-index-label">${newIndex + 1}</span></span>
+                    </div>
+                    <button type="button" onclick="removeStory(this)" class="text-red-500 hover:text-red-700 bg-red-50/50 hover:bg-red-100 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors">Hapus</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="input-label">Tahun</label>
+                        <input type="text" name="love_stories[${newIndex}][year]" class="input-field text-center" placeholder="2020">
+                    </div>
+                    <div class="md:col-span-4">
+                        <label class="input-label">Judul</label>
+                        <input type="text" name="love_stories[${newIndex}][title]" class="input-field" placeholder="Pertama Bertemu">
+                    </div>
+                    <div class="md:col-span-6">
+                        <label class="input-label">Cerita</label>
+                        <textarea name="love_stories[${newIndex}][story]" rows="1" class="input-field" placeholder="Cerita singkat..."></textarea>
+                    </div>
+                </div>
+            </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+            updateStoryIndices();
+        }
+
+        function removeStory(btn) {
+            if(confirm('Hapus cerita ini?')) {
+                const item = btn.closest('.story-card');
+                item.remove();
+                updateStoryIndices();
+            }
+        }
+
+        function updateStoryIndices() {
+            const items = document.querySelectorAll('.story-card');
+            items.forEach((item, idx) => {
+                const num = idx + 1;
+                item.querySelector('.story-index-badge').textContent = num;
+                item.querySelector('.story-index-label').textContent = num;
+            });
+        }
+
+        // =============================================
+        // Wilayah Indonesia — Chained Dropdown
+        // =============================================
+        const wilayahGroups = ['akad', 'resepsi', 'kado'];
+
+        async function fetchWilayah(url) {
+            try {
+                const res = await fetch(url);
+                return await res.json();
+            } catch(e) {
+                console.error('Gagal fetch wilayah:', e);
+                return [];
+            }
+        }
+
+        function populateSelect(selectEl, data, nameKey, savedValue) {
+            selectEl.innerHTML = '<option value="">-- Pilih --</option>';
+            data.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = item[nameKey];
+                if (item[nameKey] === savedValue) opt.selected = true;
+                selectEl.appendChild(opt);
+            });
+            selectEl.disabled = false;
+        }
+
+        async function initProvince(prefix) {
+            const provinceEl = document.getElementById(prefix + '_province');
+            if (!provinceEl) return;
+
+            const savedProv = provinceEl.dataset.saved || '';
+            const savedReg  = document.getElementById(prefix + '_regency')?.dataset.saved || '';
+            const savedDist = document.getElementById(prefix + '_district')?.dataset.saved || '';
+            const savedVil  = document.getElementById(prefix + '_village')?.dataset.saved || '';
+
+            const provinces = await fetchWilayah('/api/wilayah/provinces');
+            populateSelect(provinceEl, provinces, 'name', savedProv);
+
+            // If there's a saved value, cascade load next levels
+            const selectedProv = provinces.find(p => p.name === savedProv);
+            if (selectedProv) {
+                await loadRegency(prefix, selectedProv.id, savedReg, savedDist, savedVil);
+            }
+
+            // On change handler
+            provinceEl.addEventListener('change', async function() {
+                const selOpt = this.options[this.selectedIndex];
+                document.getElementById(prefix + '_province_name').value = selOpt.text !== '-- Pilih --' ? selOpt.text : '';
+                
+                // Reset downstream
+                resetSelect(prefix + '_regency');
+                resetSelect(prefix + '_district');
+                resetSelect(prefix + '_village');
+                document.getElementById(prefix + '_regency_name').value = '';
+                document.getElementById(prefix + '_district_name').value = '';
+                document.getElementById(prefix + '_village_name').value = '';
+
+                if (this.value) {
+                    await loadRegency(prefix, this.value, '', '', '');
+                }
+            });
+        }
+
+        async function loadRegency(prefix, provinceId, savedReg, savedDist, savedVil) {
+            const regencyEl = document.getElementById(prefix + '_regency');
+            if (!regencyEl) return;
+
+            const regencies = await fetchWilayah('/api/wilayah/regencies/' + provinceId);
+            populateSelect(regencyEl, regencies, 'name', savedReg);
+
+            const selectedReg = regencies.find(r => r.name === savedReg);
+            if (selectedReg) {
+                await loadDistrict(prefix, selectedReg.id, savedDist, savedVil);
+            }
+
+            regencyEl.addEventListener('change', async function() {
+                const selOpt = this.options[this.selectedIndex];
+                document.getElementById(prefix + '_regency_name').value = selOpt.text !== '-- Pilih --' ? selOpt.text : '';
+                resetSelect(prefix + '_district');
+                resetSelect(prefix + '_village');
+                document.getElementById(prefix + '_district_name').value = '';
+                document.getElementById(prefix + '_village_name').value = '';
+                if (this.value) await loadDistrict(prefix, this.value, '', '');
+            });
+        }
+
+        async function loadDistrict(prefix, regencyId, savedDist, savedVil) {
+            const districtEl = document.getElementById(prefix + '_district');
+            if (!districtEl) return;
+
+            const districts = await fetchWilayah('/api/wilayah/districts/' + regencyId);
+            populateSelect(districtEl, districts, 'name', savedDist);
+
+            const selectedDist = districts.find(d => d.name === savedDist);
+            if (selectedDist) {
+                await loadVillage(prefix, selectedDist.id, savedVil);
+            }
+
+            districtEl.addEventListener('change', async function() {
+                const selOpt = this.options[this.selectedIndex];
+                document.getElementById(prefix + '_district_name').value = selOpt.text !== '-- Pilih --' ? selOpt.text : '';
+                resetSelect(prefix + '_village');
+                document.getElementById(prefix + '_village_name').value = '';
+                if (this.value) await loadVillage(prefix, this.value, '');
+            });
+        }
+
+        async function loadVillage(prefix, districtId, savedVil) {
+            const villageEl = document.getElementById(prefix + '_village');
+            if (!villageEl) return;
+
+            const villages = await fetchWilayah('/api/wilayah/villages/' + districtId);
+            populateSelect(villageEl, villages, 'name', savedVil);
+
+            villageEl.addEventListener('change', function() {
+                const selOpt = this.options[this.selectedIndex];
+                document.getElementById(prefix + '_village_name').value = selOpt.text !== '-- Pilih --' ? selOpt.text : '';
+            });
+        }
+
+        function resetSelect(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = '<option value="">-- Pilih --</option>';
+            el.disabled = true;
+        }
+
+        // Initialize all dropdown groups on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            wilayahGroups.forEach(prefix => initProvince(prefix));
+        });
+
+        // =============================================
+        // Client-Side Image Compression (Fix POST Too Large)
+        // =============================================
+        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Pause submission
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mengompresi Foto...';
+
+            const fileInputs = this.querySelectorAll('input[type="file"]');
+            
+            for (let input of fileInputs) {
+                if (input.files && input.files.length > 0) {
+                    const dataTransfer = new DataTransfer();
+                    
+                    for (let i = 0; i < input.files.length; i++) {
+                        const file = input.files[i];
+                        
+                        // Only compress images
+                        if (!file.type.match(/image.*/)) {
+                            dataTransfer.items.add(file);
+                            continue;
+                        }
+
+                        try {
+                            // Max 2500px (HD), convert to WebP at 85% Quality for huge size savings without blur
+                            const compressedFile = await compressImage(file, 2500, 2500, 0.85); 
+                            dataTransfer.items.add(compressedFile);
+                        } catch (err) {
+                            console.error('Compression failed for', file.name, err);
+                            dataTransfer.items.add(file); // Fallback to original if compression fails
+                        }
+                    }
+                    
+                    // Replace original files with compressed files
+                    input.files = dataTransfer.files;
+                }
+            }
+            
+            submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyimpan...';
+            this.submit(); // Resume submission
+        });
+
+        function compressImage(file, maxWidth, maxHeight, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height *= maxWidth / width));
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width *= maxHeight / height));
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Output format (Force WebP for best size/quality ratio, fallback to jpeg)
+                        const outType = 'image/webp';
+                        
+                        canvas.toBlob((blob) => {
+                            if (!blob) {
+                                reject(new Error('Canvas is empty'));
+                                return;
+                            }
+                            // Keep original filename but change extension to .webp if applicable
+                            const newFilename = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                            // Return new File object
+                            const newFile = new File([blob], newFilename, {
+                                type: outType,
+                                lastModified: Date.now()
+                            });
+                            resolve(newFile);
+                        }, outType, quality);
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
         }
     </script>
 </x-app-layout>

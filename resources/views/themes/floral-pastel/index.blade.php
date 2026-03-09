@@ -168,8 +168,15 @@
                         </p>
                         <p>{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
                         <p style="margin-top: 5px; font-size: 0.9rem;"><strong>{{ $invitation->content['acara']['akad']['tempat'] ?? '' }}</strong></p>
+                        @php
+                            $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                            $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                            $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                        @endphp
+                        @if($akadL1)<p style="font-size: 0.8rem; color: #777; margin: 2px 0;">{{ $akadL1 }}</p>@endif
+                        @if($akadL2)<p style="font-size: 0.8rem; color: #777; margin: 2px 0;">{{ $akadL2 }}</p>@endif
                         @if(!empty($invitation->content['acara']['akad']['maps']))
-                            <a href="{{ $invitation->content['acara']['akad']['maps'] }}" target="_blank" style="display:inline-block; margin-top:10px; color:white; background:var(--secondary); padding:5px 15px; border-radius:15px; text-decoration:none; font-size:0.8rem;">Google Maps</a>
+                            <a href="{{ $invitation->content['acara']['akad']['maps'] }}" target="_blank" style="position:relative; z-index:50; display:inline-block; margin-top:10px; color:white; background:var(--secondary); padding:5px 15px; border-radius:15px; text-decoration:none; font-size:0.8rem;">Google Maps</a>
                         @endif
                     </div>
 
@@ -180,8 +187,15 @@
                         </p>
                         <p>{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
                         <p style="margin-top: 5px; font-size: 0.9rem;"><strong>{{ $invitation->content['acara']['resepsi']['tempat'] ?? '' }}</strong></p>
+                        @php
+                            $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                            $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                            $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                        @endphp
+                        @if($resepsiL1)<p style="font-size: 0.8rem; color: #777; margin: 2px 0;">{{ $resepsiL1 }}</p>@endif
+                        @if($resepsiL2)<p style="font-size: 0.8rem; color: #777; margin: 2px 0;">{{ $resepsiL2 }}</p>@endif
                         @if(!empty($invitation->content['acara']['resepsi']['maps']))
-                            <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" target="_blank" style="display:inline-block; margin-top:10px; color:white; background:var(--secondary); padding:5px 15px; border-radius:15px; text-decoration:none; font-size:0.8rem;">Google Maps</a>
+                            <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" target="_blank" style="position:relative; z-index:50; display:inline-block; margin-top:10px; color:white; background:var(--secondary); padding:5px 15px; border-radius:15px; text-decoration:none; font-size:0.8rem;">Google Maps</a>
                         @endif
                     </div>
                 </div>

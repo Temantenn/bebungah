@@ -167,7 +167,13 @@
                     <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($invitation->content['acara']['akad']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
                     <p class="text-xs text-gray-300 mt-2 font-bold">{{ $invitation->content['acara']['akad']['tempat'] ?? 'Lokasi Akad' }}</p>
                     <p class="text-[10px] text-gray-500 mt-1">{{ $invitation->content['acara']['akad']['alamat'] ?? '' }}</p>
-
+                    @php
+                        $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                        $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                        $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($akadL1)<p class="text-[10px] text-gray-500 mt-0">{{ $akadL1 }}</p>@endif
+                    @if($akadL2)<p class="text-[10px] text-gray-500 mt-0 mb-1">{{ $akadL2 }}</p>@endif
                     @if(!empty($invitation->content['acara']['akad']['maps']))
                     <a href="{{ $invitation->content['acara']['akad']['maps'] }}" target="_blank" class="inline-flex items-center gap-1 mt-3 text-[#D4AF37] text-[10px] uppercase tracking-widest hover:text-white transition"><i class="ph ph-map-pin"></i> Google Maps</a>
                     @endif
@@ -178,7 +184,13 @@
                     <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($invitation->content['acara']['resepsi']['waktu'] ?? now())->format('H:i') }} WIB - Selesai</p>
                     <p class="text-xs text-gray-300 mt-2 font-bold">{{ $invitation->content['acara']['resepsi']['tempat'] ?? 'Lokasi Resepsi' }}</p>
                     <p class="text-[10px] text-gray-500 mt-1">{{ $invitation->content['acara']['resepsi']['alamat'] ?? '' }}</p>
-
+                    @php
+                        $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                        $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                        $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($resepsiL1)<p class="text-[10px] text-gray-500 mt-0">{{ $resepsiL1 }}</p>@endif
+                    @if($resepsiL2)<p class="text-[10px] text-gray-500 mt-0 mb-1">{{ $resepsiL2 }}</p>@endif
                     @if(!empty($invitation->content['acara']['resepsi']['maps']))
                     <a href="{{ $invitation->content['acara']['resepsi']['maps'] }}" target="_blank" class="inline-flex items-center gap-1 mt-3 text-[#D4AF37] text-[10px] uppercase tracking-widest hover:text-white transition"><i class="ph ph-map-pin"></i> Google Maps</a>
                     @endif
@@ -265,10 +277,11 @@
 
                 <input type="text" name="nama" required placeholder="Nama Anda" class="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white text-xs focus:border-[#D4AF37] outline-none">
 
-                <select name="kehadiran" class="form-control" required>
-                    <option value="hadir">Hadir</option>
-                    <option value="tidak_hadir">Tidak Hadir</option>
-                    <option value="ragu">Ragu-ragu</option>
+                <select name="kehadiran" class="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-[#D4AF37] outline-none text-xs" required>
+                    <option value="" disabled selected class="text-black">Konfirmasi Kehadiran</option>
+                    <option value="hadir" class="text-black">Hadir</option>
+                    <option value="tidak_hadir" class="text-black">Tidak Hadir</option>
+                    <option value="ragu" class="text-black">Ragu-ragu</option>
                 </select>
                 <textarea name="ucapan" rows="3" required placeholder="Tulis doa & ucapan..." class="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white text-xs focus:border-[#D4AF37] outline-none"></textarea>
 

@@ -1,396 +1,246 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selesaikan Pembayaran - TEMANTEN</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><rect width=%2248%22 height=%2248%22 rx=%2212%22 fill=%22%234F46E5%22/><path d=%22M15 13h18v6h-6v17h-6v-17h-6v-6z%22 fill=%22white%22/></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* =================================================================
-           CONFIGURATION SECTION - EDIT VALUES HERE
-           ================================================================= */
-        :root {
-            /* Brand Colors */
-            --primary: #4F46E5;
-            --primary-dark: #4338CA;
-            --secondary: #EC4899;
-            --accent: #10B981;
-            
-            /* Status Colors */
-            --success: #10B981;
-            --warning: #F59E0B;
-            --info: #3B82F6;
-            --error: #EF4444;
-        }
-        
-        /* =================================================================
-           CUSTOM STYLES - SAFE TO MODIFY
-           ================================================================= */
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
-        .animate-slideUp { animation: slideUp 0.6s ease-out; }
-        .animate-scaleIn { animation: scaleIn 0.5s ease-out; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .pulse-glow { animation: pulse-glow 2s infinite; }
-        
-        /* Gradient backgrounds */
-        .gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .gradient-success {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        }
-        
-        /* Dot pattern background */
-        .dot-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        
-        /* QR Code hover effect */
-        .qr-container {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .qr-container:hover {
-            transform: scale(1.05) rotate(2deg);
-        }
-        
-        /* Success checkmark animation */
-        @keyframes checkmark {
-            0% { stroke-dashoffset: 100; }
-            100% { stroke-dashoffset: 0; }
-        }
-        
-        .checkmark-path {
-            stroke-dasharray: 100;
-            animation: checkmark 0.6s ease-out 0.3s forwards;
-        }
-        
-        /* Button shine effect */
-        .btn-shine {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-shine::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn-shine:hover::before {
-            left: 100%;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Payment - Temanten</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-gray-50 via-white to-indigo-50/30 min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="font-sans antialiased text-gray-900 dark:text-gray-100 bg-[#f8fafc] dark:bg-gray-950">
+    <div class="min-h-[100dvh] w-full flex flex-col justify-start md:justify-center items-center py-12 md:py-16 px-4" x-data="paymentTimer('{{ $order->expired_at->toIso8601String() }}')">
+        <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/30 via-transparent to-pink-100/30 dark:from-indigo-900/10 dark:to-pink-900/10"></div>
 
-    <!-- Main Container -->
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl overflow-hidden animate-fadeIn">
-        
-        <!-- Success Header Bar (Mobile) -->
-        <div class="md:hidden w-full h-2 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500"></div>
-        
-        <div class="flex flex-col md:flex-row min-h-[600px]">
-            
-            <!-- Left Panel - QR Code Section -->
-            <div class="w-full md:w-1/2 gradient-primary text-white p-8 md:p-12 flex flex-col items-center justify-center relative overflow-hidden">
-                <!-- Decorative Background Pattern -->
-                <div class="absolute inset-0 dot-pattern opacity-100"></div>
+        <div class="w-full max-w-[360px] md:max-w-3xl mx-auto animate-in fade-in zoom-in duration-500">
+            <div class="bg-white dark:bg-gray-900 rounded-[2rem] shadow-[0_15px_40px_rgba(79,70,229,0.08)] dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col md:flex-row relative">
                 
-                <!-- Floating Decoration Elements -->
-                <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-2xl animate-float"></div>
-                <div class="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
-                
-                <!-- Content -->
-                <div class="relative z-10 text-center space-y-8 animate-slideUp">
-                    <!-- Header -->
-                    <div class="space-y-3">
-                        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-2">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            <span>Pembayaran Mudah & Aman</span>
-                        </div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold leading-tight">Scan untuk<br/>Membayar</h2>
-                        <p class="text-white/80 text-sm">Pembayaran akan diverifikasi otomatis oleh sistem kami</p>
-                    </div>
-
-                    <!-- QR Code -->
-                    <div class="qr-container inline-block">
-                        <div class="bg-white p-6 rounded-3xl shadow-2xl">
-                            <!-- 
-                                ============================================
-                                QRIS IMAGE - EDIT PATH HERE
-                                ============================================
-                            -->
-                            <img src="{{ asset('img/qris1.jpeg') }}" 
-                                 alt="QRIS Payment Code" 
-                                 class="w-64 h-64 md:w-80 md:h-80 object-contain mx-auto rounded-xl">
-                        </div>
-                    </div>
-
-                    <!-- Payment Methods -->
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-center gap-4 flex-wrap">
-                            <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl flex items-center gap-2">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/QRIS_logo.svg/1200px-QRIS_logo.svg.png" 
-                                     class="h-5 brightness-0 invert" 
-                                     alt="QRIS">
-                                <span class="text-xs font-semibold">QRIS</span>
-                            </div>
-                            <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
-                                <span class="text-xs font-semibold">+ Semua E-Wallet</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Supported E-Wallets -->
-                        <div class="flex items-center justify-center gap-3 opacity-80">
-                            <span class="text-xs">Mendukung:</span>
-                            <div class="flex gap-2">
-                                <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                                    <span class="text-xs font-bold">OVO</span>
-                                </div>
-                                <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                                    <span class="text-xs font-bold">GP</span>
-                                </div>
-                                <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                                    <span class="text-xs font-bold">DA</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel - Order Details & Confirmation -->
-            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white relative">
-                
-                <!-- Success Badge -->
-                <div class="flex items-center gap-4 mb-8 animate-slideUp">
-                    <div class="relative">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-200">
-                            <svg class="w-8 h-8 text-white checkmark-path" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-ping"></div>
-                    </div>
+                <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800 z-10">
                     <div>
-                        <h1 class="text-2xl font-extrabold text-gray-900">Pesanan Berhasil Dibuat!</h1>
-                        <p class="text-gray-500 text-sm mt-1">Menunggu konfirmasi pembayaran Anda</p>
+                        <div class="pb-4 md:pb-6 border-b md:border-b border-gray-50 dark:border-gray-800/50 mb-4 md:mb-6 flex flex-col md:items-start items-center">
+                            <h2 class="text-2xl font-black tracking-tighter text-indigo-600 dark:text-indigo-400 leading-none">TEMANTEN<span class="text-pink-500">.</span></h2>
+                            <p class="text-[9px] uppercase tracking-[0.3em] text-gray-400 font-bold mt-1.5 px-0.5">Official Payment Gateway</p>
+                        </div>
+
+                        <div class="md:hidden flex flex-col items-center justify-center w-full">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 mt-1">Total Tagihan</span>
+                            <div class="text-4xl font-black text-indigo-600 dark:text-white tracking-tighter">
+                                <span class="text-sm opacity-40 font-bold mr-0.5">Rp</span>{{ number_format($order->total_amount, 0, ',', '.') }}
+                            </div>
+                            <div class="mt-2 text-[10px] font-bold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-100 dark:border-gray-700">Order ID: <span class="text-indigo-500">#{{ substr($order->order_number, -8) }}</span></div>
+                        </div>
+
+                        <div class="hidden md:block">
+                            <div class="flex flex-col gap-5 mb-8">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order ID</span>
+                                    <span class="text-sm font-black text-gray-700 dark:text-gray-300">#{{ substr($order->order_number, -8) }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex flex-col">
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Detail Pesanan</span>
+                                        <span class="text-sm font-black text-gray-800 dark:text-gray-200 mt-0.5">{{ $order->theme->name }}</span>
+                                    </div>
+                                    <div class="bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-1 rounded text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase">Premium</div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3 mb-8">
+                                <div class="flex justify-between items-center text-xs font-bold uppercase tracking-tight">
+                                    <span class="text-gray-400">Harga Layanan</span>
+                                    <span class="text-gray-500 line-through">Rp {{ number_format($order->theme->effective_price, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs font-bold uppercase tracking-tight">
+                                    <span class="text-indigo-600 dark:text-indigo-400">Promo Spesial</span>
+                                    <span class="text-pink-500 font-black">-Rp {{ number_format($order->unique_code, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="pt-3 flex justify-between items-end border-t border-dashed border-gray-200 dark:border-gray-700">
+                                    <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1.5">Total Akhir</span>
+                                    <div class="text-3xl font-black text-indigo-600 dark:text-white tracking-tighter">
+                                        <span class="text-sm opacity-40 font-bold mr-0.5">Rp</span>{{ number_format($order->total_amount, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block space-y-3 mt-auto">
+                        @php
+                            $waNumber = env('ADMIN_WHATSAPP', '628123456789');
+                            $waMessage = "Konfirmasi Pembayaran TEMANTEN\nOrder: {$order->order_number}\nNominal: Rp " . number_format($order->total_amount, 0, ',', '.') . "\nPromo Spesial: -Rp {$order->unique_code}\n\nTerima kasih!";
+                            $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($waMessage);
+                        @endphp
+                        
+                        <a href="{{ $waLink }}" target="_blank" 
+                           class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 group">
+                            <span class="text-sm">Konfirmasi via WA</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+
+                        <a href="{{ route('home') }}" 
+                           class="flex items-center justify-center w-full text-gray-400 hover:text-indigo-600 font-bold py-2 text-[10px] uppercase tracking-widest transition-colors duration-300">
+                            Kembali ke Beranda
+                        </a>
                     </div>
                 </div>
 
-                <!-- Order Summary Card -->
-                <div class="border-2 border-gray-100 rounded-2xl p-6 mb-6 bg-gradient-to-br from-gray-50 to-white shadow-lg animate-scaleIn space-y-4">
-                    <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Ringkasan Pesanan
-                    </h3>
-                    
-                    <!-- Order Details -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">ID Pesanan</span>
-                            <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg">#INV-{{ $invitation->id }}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">Paket</span>
-                            <span class="font-semibold text-gray-900">Undangan Premium</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600">Status</span>
-                            @if($invitation->status === 'cancelled')
-                                <span class="inline-flex items-center gap-1.5 bg-red-50 text-red-700 px-3 py-1 rounded-lg text-xs font-bold">
-                                    <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Dibatalkan
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
-                                    <div class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                                    Menunggu Pembayaran
-                                </span>
-                            @endif
+                <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col items-center justify-center bg-gray-50/50 dark:bg-gray-800/30">
+                    <div class="mb-6 md:mb-8 w-full flex flex-col items-center select-none">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 text-center">Selesaikan Pembayaran Dalam</span>
+                        <div class="flex items-center gap-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700/50 px-4 py-2 rounded-xl shadow-sm">
+                            <div class="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></div>
+                            <span class="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 tracking-wider">
+                                <span x-text="hours">00</span>:<span x-text="minutes">00</span>:<span x-text="seconds">00</span>
+                            </span>
                         </div>
                     </div>
-                    
-                    <!-- Divider -->
-                    <div class="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
-                    
-                    <!-- Total -->
-                    <div class="flex justify-between items-center bg-indigo-50 rounded-xl p-4">
-                        <span class="text-gray-700 font-bold text-base">Total Pembayaran</span>
-                        <div class="text-right">
-                            @if($invitation->theme->has_promo)
-                                <div class="text-xs text-gray-500 line-through">{{ $invitation->theme->formatted_original_price }}</div>
-                            @endif
-                            <span class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{{ $invitation->theme->formatted_price }}</span>
+
+                    <div class="flex flex-col items-center justify-center mb-6 md:mb-8 w-full group select-none">
+                        <div class="relative p-2.5 bg-white rounded-2xl border-2 border-indigo-50/50 dark:border-gray-700 shadow-xl shadow-indigo-50 dark:shadow-none hover:scale-[1.02] transition-transform duration-300">
+                            <div class="absolute inset-x-0 h-1 bg-indigo-500/50 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-t-xl" style="animation: scan 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;"></div>
+                            
+                            <div id="qris-svg-container" class="relative bg-white rounded-xl overflow-hidden p-1.5 flex align-center justify-center">
+                                {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->margin(0)->color(31, 41, 55)->generate($order->dynamic_qris) !!}
+                            </div>
                         </div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" alt="QRIS" class="h-4 md:h-5 mt-5 md:mt-6 opacity-80 mix-blend-multiply dark:mix-blend-normal">
+                        
+                        <button onclick="downloadQR()" type="button" class="mt-5 flex items-center justify-center gap-1.5 w-full max-w-[160px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 font-bold py-2 rounded-xl transition-all duration-300 shadow-sm active:scale-95 group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                            <svg class="w-3.5 h-3.5 text-indigo-500 transform group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            <span class="text-[10px] uppercase tracking-widest mt-0.5">Simpan QRIS</span>
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-auto w-full px-2 lg:px-6">
+                        <div class="inline-flex items-center justify-center gap-1.5 mb-2 px-3 py-1 bg-pink-50 dark:bg-pink-900/30 rounded-full border border-pink-100 dark:border-pink-800/50">
+                            <svg class="w-3.5 h-3.5 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            <span class="text-[9px] font-black text-pink-600 dark:text-pink-400 uppercase tracking-widest">Penting</span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-relaxed tracking-tight">
+                            Pastikan transfer <span class="text-indigo-500 dark:text-indigo-400 font-black uppercase">TEPAT</span> memuat <span class="text-pink-500 font-black border-b border-pink-500 border-dashed pb-0.5">3 digit angka</span> unik di akhir nominal tagihan.
+                        </p>
                     </div>
                 </div>
 
-                @if($invitation->status !== 'cancelled')
-                <!-- Important Notice -->
-                <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 mb-8 animate-slideUp">
-                    <div class="flex gap-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                        </div>
-                        <div class="flex-1 space-y-2">
-                            <h4 class="font-bold text-blue-900 text-sm">Langkah Selanjutnya:</h4>
-                            <ol class="text-blue-800 text-sm space-y-1.5 leading-relaxed list-decimal list-inside">
-                                <li>Transfer sesuai <strong>nominal exact</strong> ({{ $invitation->theme->formatted_price }})</li>
-                                <li><strong>Wajib kirim bukti transfer</strong> ke WhatsApp Admin</li>
-                                <li>Akun Anda akan <strong>aktif otomatis</strong> setelah verifikasi</li>
-                            </ol>
-                        </div>
+                <div class="w-full p-6 bg-white dark:bg-gray-900 block md:hidden border-t border-gray-100 dark:border-gray-800">
+                    <div class="max-w-md mx-auto space-y-3">
+                        @php
+                            $waNumber = env('ADMIN_WHATSAPP', '6282220312195');
+                            $waMessage = "Konfirmasi Pembayaran TEMANTEN\nOrder: {$order->order_number}\nNominal: Rp " . number_format($order->total_amount, 0, ',', '.') . "\nPromo Spesial: -Rp {$order->unique_code}\n\nTerima kasih!";
+                            $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($waMessage);
+                        @endphp
+                        
+                        <a href="{{ $waLink }}" target="_blank" 
+                           class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 group">
+                            <span class="text-sm">Konfirmasi via WA</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+
+                        <a href="{{ route('home') }}" 
+                           class="flex items-center justify-center w-full text-gray-400 hover:text-indigo-600 font-bold py-2 text-[10px] uppercase tracking-widest transition-colors duration-300">
+                            Kembali ke Beranda
+                        </a>
                     </div>
                 </div>
-
-                <!-- 
-                    ============================================
-                    WHATSAPP CONFIGURATION - EDIT VALUES HERE
-                    ============================================
-                -->
-                @php
-                    $email = session('order_email') ?? '-';
-                    
-                    // WhatsApp Admin Number (without +)
-                    $adminWa = '6282220312195'; 
-                    
-                    // WhatsApp Message Template
-                    $totalHarga = $invitation->theme->formatted_price;
-                    $pesan = "Halo Admin Bebungah,%0A%0ASaya sudah order undangan dan melakukan pembayaran.%0AEmail Login: $email%0ATotal: $totalHarga%0A%0AMohon segera diproses dan kirimkan password akun saya. Terima kasih!";
-                @endphp
-
-                <!-- WhatsApp Confirmation Button -->
-                <a href="https://wa.me/{{ $adminWa }}?text={{ $pesan }}" 
-                   target="_blank" 
-                   class="group btn-shine w-full gradient-success text-white font-bold py-5 rounded-2xl text-center shadow-2xl shadow-green-300 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mb-4 pulse-glow">
-                    <svg class="w-7 h-7 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                    </svg>
-                    <span class="text-lg">Konfirmasi Pembayaran via WhatsApp</span>
-                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                </a>
-                @else
-                <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-5 mb-8 animate-slideUp">
-                    <div class="flex gap-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                            </div>
-                        </div>
-                        <div class="flex-1 space-y-2">
-                            <h4 class="font-bold text-red-900 text-sm">Pesanan Dibatalkan</h4>
-                            <p class="text-red-800 text-sm leading-relaxed">
-                                Mohon maaf, pesanan ini telah dibatalkan otomatis karena melewati batas waktu pembayaran 1x24 jam. Silakan buat pesanan baru jika ingin melanjutkan.
-                            </p>
-                            <div class="mt-4">
-                                <a href="{{ route('order.create') }}" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                    Buat Pesanan Baru
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                
-                <!-- 
-                    ============================================
-                    CANCEL/BACK LINK - EDIT URL HERE
-                    ============================================
-                -->
-                <a href="/" 
-                   class="group text-center text-sm text-gray-500 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    <span>Kembali ke Beranda</span>
-                </a>
-
-                <!-- Features Info -->
-                <div class="mt-8 pt-6 border-t border-gray-100">
-                    <p class="text-xs text-gray-500 text-center mb-3 font-semibold">Yang Anda Dapatkan:</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="text-center space-y-1">
-                            <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center mx-auto">
-                                <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            </div>
-                            <p class="text-xs text-gray-600 font-medium">Unlimited Tamu</p>
-                        </div>
-                        <div class="text-center space-y-1">
-                            <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center mx-auto">
-                                <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            </div>
-                            <p class="text-xs text-gray-600 font-medium">Edit Kapan Saja</p>
-                        </div>
-                        <div class="text-center space-y-1">
-                            <div class="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center mx-auto">
-                                <svg class="w-4 h-4 text-pink-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            </div>
-                            <p class="text-xs text-gray-600 font-medium">Akses Selamanya</p>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest opacity-60">
+                    © {{ date('Y') }} PT. TEMANTEN DIGITAL INVITATION
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Footer Info (Optional) -->
-    <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 hidden md:block">
-        <div class="bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border border-gray-200 flex items-center gap-2 text-xs text-gray-600">
-            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            <span class="font-medium">Pembayaran Aman & Terenkripsi</span>
-        </div>
-    </div>
+<style>
+@keyframes scan {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(220px); opacity: 0; }
+}
+</style>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('paymentTimer', (expiredAt) => ({
+            hours: '00',
+            minutes: '00',
+            seconds: '00',
+            endTime: new Date(expiredAt).getTime(),
+            init() {
+                this.updateTimer();
+                setInterval(() => this.updateTimer(), 1000);
+            },
+            updateTimer() {
+                const now = new Date().getTime();
+                const distance = this.endTime - now;
+                if (distance < 0) {
+                    this.hours = '00'; this.minutes = '00'; this.seconds = '00';
+                    return;
+                }
+                this.hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                this.minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                this.seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+            }
+        }));
+    });
 
+    function downloadQR() {
+        const svg = document.querySelector('#qris-svg-container svg');
+        if(!svg) return;
+        
+        // Ensure SVG has proper XML namespace for conversion
+        if(!svg.getAttribute('xmlns')) {
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Define padding and calculate final size
+        const padding = 20;
+        // The QR code is generated with size 200 (defined in Laravel)
+        const size = 200 + (padding * 2); 
+        canvas.width = size;
+        canvas.height = size;
+        
+        // Fill background with white to avoid transparent PNG issues in galleries
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Serialize the SVG to string
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+        const URL = window.URL || window.webkitURL || window;
+        const blobURL = URL.createObjectURL(blob);
+        
+        const img = new Image();
+        img.onload = function() {
+            // Draw image on canvas with padding
+            ctx.drawImage(img, padding, padding);
+            
+            // Convert to PNG data URL
+            const pngUrl = canvas.toDataURL('image/png');
+            
+            // Create a temporary link to trigger download
+            const downloadLink = document.createElement('a');
+            downloadLink.href = pngUrl;
+            downloadLink.download = 'QRIS_TEMANTEN_{{ $order->order_number }}.png';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            // Clean up memory
+            URL.revokeObjectURL(blobURL);
+        };
+        img.src = blobURL;
+    }
+</script>
 </body>
 </html>

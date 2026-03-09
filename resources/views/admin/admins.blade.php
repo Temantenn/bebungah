@@ -27,6 +27,10 @@
     <div class="py-8 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
+            @if(session('success'))
+                <x-alert-success :message="session('success')" />
+            @endif
+
             <div class="dashboard-card">
                 <div class="card-header card-header-info">
                     <div class="flex items-center gap-4">
@@ -109,32 +113,37 @@
                 </button>
             </div>
             
-            <form action="{{ route('admin.storeAdmin') }}" method="POST" class="p-6 space-y-4">
+            <form action="{{ route('admin.storeAdmin') }}" method="POST">
                 @csrf
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
-                    <input type="text" name="name" required class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-xs font-normal text-gray-500">(digunakan untuk login)</span></label>
-                    <input type="email" name="email" required class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                        <input type="password" name="password" required class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                <div class="p-6">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">Lengkapi form di bawah ini untuk menambahkan akun administrator baru ke dalam sistem.</p>
+                    
+                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <label class="text-sm font-semibold text-gray-700 dark:text-gray-200" for="name">Nama Lengkap</label>
+                            <input id="name" name="name" type="text" required class="block w-full px-4 py-2.5 mt-1.5 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:text-gray-300 dark:border-gray-600 focus:bg-white focus:border-pink-400 focus:ring-pink-300 focus:ring-opacity-40 dark:focus:border-pink-300 focus:outline-none focus:ring transition-all duration-200">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="text-sm font-semibold text-gray-700 dark:text-gray-200" for="emailAddress">Email Address <span class="text-xs font-normal text-gray-500 dark:text-gray-500">(digunakan untuk login)</span></label>
+                            <input id="emailAddress" name="email" type="email" required class="block w-full px-4 py-2.5 mt-1.5 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:text-gray-300 dark:border-gray-600 focus:bg-white focus:border-pink-400 focus:ring-pink-300 focus:ring-opacity-40 dark:focus:border-pink-300 focus:outline-none focus:ring transition-all duration-200">
+                        </div>
+
+                        <div>
+                            <label class="text-sm font-semibold text-gray-700 dark:text-gray-200" for="password">Password</label>
+                            <input id="password" name="password" type="password" required class="block w-full px-4 py-2.5 mt-1.5 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:text-gray-300 dark:border-gray-600 focus:bg-white focus:border-pink-400 focus:ring-pink-300 focus:ring-opacity-40 dark:focus:border-pink-300 focus:outline-none focus:ring transition-all duration-200">
+                        </div>
+
+                        <div>
+                            <label class="text-sm font-semibold text-gray-700 dark:text-gray-200" for="passwordConfirmation">Konfirmasi Password</label>
+                            <input id="passwordConfirmation" name="password_confirmation" type="password" required class="block w-full px-4 py-2.5 mt-1.5 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:text-gray-300 dark:border-gray-600 focus:bg-white focus:border-pink-400 focus:ring-pink-300 focus:ring-opacity-40 dark:focus:border-pink-300 focus:outline-none focus:ring transition-all duration-200">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Ulangi Password</label>
-                        <input type="password" name="password_confirmation" required class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-pink-500 focus:ring-pink-500">
-                    </div>
                 </div>
-                
-                <div class="mt-8 flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
-                    <button type="button" onclick="document.getElementById('addAdminModal').classList.add('hidden')" class="w-1/3 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition">
-                        Batal
-                    </button>
-                    <button type="submit" class="w-2/3 py-2.5 px-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-md transition">
+
+                <div class="flex justify-end px-6 py-4 bg-gray-50/80 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700 gap-3">
+                    <button type="button" onclick="document.getElementById('addAdminModal').classList.add('hidden')" class="px-6 py-2.5 text-sm font-bold leading-5 text-gray-700 transition-colors duration-300 transform bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 text-sm font-bold leading-5 text-white transition-colors duration-300 transform bg-gradient-to-r from-pink-600 to-rose-600 rounded-lg hover:from-pink-700 hover:to-rose-700 shadow-md shadow-pink-500/30 focus:outline-none focus:ring focus:ring-pink-300 focus:ring-opacity-80 flex items-center gap-2">
                         Simpan Admin
                     </button>
                 </div>
@@ -171,12 +180,7 @@
     </style>
 
     <script>
-        @if(session('success'))
-        Swal.fire({
-            toast: true, position: 'top-end', showConfirmButton: false, timer: 3000,
-            icon: 'success', title: '{{ session("success") }}'
-        });
-        @endif
+
         
         @if(session('error'))
         Swal.fire({

@@ -411,6 +411,13 @@ $sections=[
                     <div class="ev-row"><span class="ev-i">📅</span><span>{{ \Carbon\Carbon::parse($akad['waktu'] ?? now())->translatedFormat('l, d F Y') }}</span></div>
                     <div class="ev-row"><span class="ev-i">🕐</span><span>Pukul {{ \Carbon\Carbon::parse($akad['waktu'] ?? now())->format('H:i') }} WIB</span></div>
                     <div class="ev-row"><span class="ev-i">📍</span><span>{{ $akad['tempat'] ?? 'Pendopo Kediaman' }}@if(!empty($akad['alamat']))<br>{{ $akad['alamat'] }}@endif</span></div>
+                    @php
+                        $akadW = $invitation->content['acara']['akad']['wilayah'] ?? [];
+                        $akadL1 = collect([!empty($akadW['village']) ? 'Kel. '.Str::title(strtolower($akadW['village'])) : null, !empty($akadW['district']) ? 'Kec. '.Str::title(strtolower($akadW['district'])) : null])->filter()->implode(', ');
+                        $akadL2 = collect([!empty($akadW['regency']) ? Str::title(strtolower($akadW['regency'])) : null, !empty($akadW['province']) ? Str::title(strtolower($akadW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($akadL1)<div class="ev-row" style="padding-left:22px;"><span>{{ $akadL1 }}</span></div>@endif
+                    @if($akadL2)<div class="ev-row" style="padding-left:22px;"><span>{{ $akadL2 }}</span></div>@endif
                     @if(!empty($akad['maps']))<a href="{{ $akad['maps'] }}" class="btn-map-flip" target="_blank" onclick="event.stopPropagation()">🗺 Peta Lokasi</a>@endif
                 </div>
                 {{-- BACK: RESEPSI --}}
@@ -420,6 +427,13 @@ $sections=[
                     <div class="ev-row"><span class="ev-i">📅</span><span>{{ \Carbon\Carbon::parse($resepsi['waktu'] ?? now())->translatedFormat('l, d F Y') }}</span></div>
                     <div class="ev-row"><span class="ev-i">🕐</span><span>Pukul {{ \Carbon\Carbon::parse($resepsi['waktu'] ?? now())->format('H:i') }} WIB</span></div>
                     <div class="ev-row"><span class="ev-i">📍</span><span>{{ $resepsi['tempat'] ?? 'Gedung Pertemuan' }}@if(!empty($resepsi['alamat']))<br>{{ $resepsi['alamat'] }}@endif</span></div>
+                    @php
+                        $resepsiW = $invitation->content['acara']['resepsi']['wilayah'] ?? [];
+                        $resepsiL1 = collect([!empty($resepsiW['village']) ? 'Kel. '.Str::title(strtolower($resepsiW['village'])) : null, !empty($resepsiW['district']) ? 'Kec. '.Str::title(strtolower($resepsiW['district'])) : null])->filter()->implode(', ');
+                        $resepsiL2 = collect([!empty($resepsiW['regency']) ? Str::title(strtolower($resepsiW['regency'])) : null, !empty($resepsiW['province']) ? Str::title(strtolower($resepsiW['province'])) : null])->filter()->implode(', ');
+                    @endphp
+                    @if($resepsiL1)<div class="ev-row" style="padding-left:22px;"><span>{{ $resepsiL1 }}</span></div>@endif
+                    @if($resepsiL2)<div class="ev-row" style="padding-left:22px;"><span>{{ $resepsiL2 }}</span></div>@endif
                     @if(!empty($resepsi['maps']))<a href="{{ $resepsi['maps'] }}" class="btn-map-flip" target="_blank" onclick="event.stopPropagation()">🗺 Peta Lokasi</a>@endif
                 </div>
             </div>

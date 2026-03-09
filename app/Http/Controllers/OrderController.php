@@ -5,27 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Invitation;
 use App\Models\User;
 use App\Models\Theme;
-use App\Models\ActivityLog;
+use App\Models\Order;
+use App\Services\OrderService;
+use App\Services\QrisService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
+    protected $orderService;
+    protected $qrisService;
+
+    public function __construct(OrderService $orderService, QrisService $qrisService)
+    {
+        $this->orderService = $orderService;
+        $this->qrisService = $qrisService;
+    }
 
     public function create()
     {
-
         $themes = Theme::where('is_active', true)->get();
-
         return view('order.form', compact('themes'));
     }
 
     public function store(Request $request)
     {
-
         $request->validate([
             'slug'            => 'required|alpha_dash|unique:invitations,slug',
             'theme_id'        => 'required|exists:themes,id',
@@ -33,12 +41,6 @@ class OrderController extends Controller
             'groom_name'      => 'required|string',
             'bride_name'      => 'required|string',
             'event_date'      => 'required|date',
-        ], [
-            'slug.required'            => 'Link undangan wajib diisi.',
-            'slug.unique'              => 'Link undangan ini sudah dipakai, silakan pilih link lain.',
-            'slug.alpha_dash'          => 'Link hanya boleh berisi huruf, angka, dan tanda strip (-).',
-            'client_whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
-            'theme_id.required'        => 'Silakan pilih salah satu tema.',
         ]);
 
         $whatsapp = $request->client_whatsapp;
@@ -48,7 +50,7 @@ class OrderController extends Controller
             $whatsapp = '62' . $whatsapp;
         }
 
-        $generatedEmail = $request->slug . '@temanten.com';
+        $generatedEmail = $request->slug . '@temanten.biz.id';
 
         if (User::where('email', $generatedEmail)->exists()) {
             return back()->withErrors(['slug' => 'ID Login untuk link ini sudah terdaftar. Mohon ganti link undangan.'])->withInput();
@@ -57,12 +59,29 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-
             $user = User::create([
                 'name'     => $request->groom_name . ' & ' . $request->bride_name,
                 'email'    => $generatedEmail,
                 'password' => Hash::make(Str::random(10)),
                 'role'     => 'client',
+            ]);
+
+            // User created, wait for admin to approve and send the real credentials.
+            // \Illuminate\Support\Facades\Auth::login($user); // Auto-login removed.
+
+            $theme = Theme::findOrFail($request->theme_id);
+            $basePrice = $this->orderService->calculatePrice($theme);
+            $uniqueCode = $this->orderService->generateUniqueCode();
+            $totalAmount = $basePrice - $uniqueCode;
+
+            $order = Order::create([
+                'order_number' => $this->orderService->generateOrderNumber(),
+                'theme_id'     => $theme->id,
+                'user_id'      => $user->id,
+                'unique_code'  => $uniqueCode,
+                'total_amount' => $totalAmount,
+                'status'       => 'pending',
+                'expired_at'   => Carbon::now()->addHours(2),
             ]);
 
             $content = [
@@ -128,50 +147,32 @@ class OrderController extends Controller
 
             DB::commit();
 
-            // Log order baru untuk tracking
-            Log::channel('activity')->info('New invitation order created', [
-                'slug'     => $request->slug,
-                'email'    => $generatedEmail,
-                'whatsapp' => $whatsapp,
-                'theme_id' => $request->theme_id,
-            ]);
-
             return redirect()->route('order.payment')->with([
-                'success'     => 'Pesanan berhasil dibuat!',
-                'order_email' => $generatedEmail,
-                'order_wa'    => $whatsapp,
-                'order_slug'  => $request->slug
+                'success'      => 'Pesanan berhasil dibuat!',
+                'order_number' => $order->order_number,
             ]);
 
         } catch (\Exception $e) {
-
             DB::rollBack();
-
-            // Log error ke file log — jangan tampilkan detail ke pengguna
-            Log::channel('daily')->error('Failed to create invitation order', [
-                'slug'  => $request->slug ?? '-',
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return back()->withErrors(['msg' => 'Terjadi kesalahan sistem. Silakan coba lagi atau hubungi admin.'])->withInput();
+            Log::error('Failed to create order: ' . $e->getMessage());
+            return back()->withErrors(['msg' => 'Terjadi kesalahan sistem: ' . $e->getMessage()])->withInput();
         }
     }
 
     public function payment()
     {
-        // Ambil slug pesanan dari session
-        $slug = session('order_slug');
+        $orderNumber = session('order_number');
 
-        if (!$slug) {
+        if (!$orderNumber) {
             return redirect()->route('order.create');
         }
 
-        // Ambil data undangan beserta temanya
-        $invitation = Invitation::where('slug', $slug)
-            ->with('theme')
-            ->firstOrFail();
+        $order = Order::with(['theme', 'user'])->where('order_number', $orderNumber)->firstOrFail();
 
-        return view('order.payment', compact('invitation'));
+        $masterQris = env('QRIS_MASTER_STRING', '00020101021226610014COM.GO-JEK.WWW01189360091431720318940210G1720318940303UMI51440014ID.CO.QRIS.WWW0215ID10254220360590303UMI520456915303360540410005802ID5908Temanten6008PEMALANG61055235262070703A016304B3D8');
+        
+        $order->dynamic_qris = $this->qrisService->generateDynamic($masterQris, $order->total_amount);
+
+        return view('order.payment', compact('order'));
     }
 }

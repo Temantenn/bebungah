@@ -32,6 +32,10 @@
 
     <div class="py-8 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            
+            @if(session('success'))
+                <x-alert-success :message="session('success')" />
+            @endif
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,7 +60,7 @@
                     <div class="stat-bg-pattern"></div>
                 </div>
                 <div class="stat-card stat-card-total">
-                    <div class="stat-icon bg-gradient-to-br from-indigo-400 to-purple-500">
+                    <div class="stat-icon bg-gradient-to-br from-blue-400 to-blue-500">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </div>
                     <div class="stat-content">
@@ -124,13 +128,43 @@
                                     </a>
                                 </td>
                                 <td class="text-right">
-                                    <form action="{{ route('admin.approve', $order->id) }}" method="POST" onsubmit="konfirmasiSwalACC(event, '{{ $order->content['mempelai']['pria']['nama'] }} & {{ $order->content['mempelai']['wanita']['nama'] }}')">
+                                    <form id="approve-form-{{ $order->id }}" action="{{ route('admin.approve', $order->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn-activate">
+                                        <button type="button" class="btn-activate w-full justify-center" onclick="openAdminModal('approve-modal-{{ $order->id }}')">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                            Aktifkan
+                                            Setujui
                                         </button>
                                     </form>
+
+                                    <!-- Flowbite Approve Modal -->
+                                    <div id="approve-modal-{{ $order->id }}" tabindex="-1" style="display:none;" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] w-full h-full bg-black/50 flex justify-center items-center">
+                                        <div class="p-4 w-full max-w-md max-h-full">
+                                            <div class="relative bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-2xl shadow-sm p-4 md:p-6 text-center">
+                                                <button type="button" style="position:absolute; top:12px; right:12px;" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" onclick="closeAdminModal('approve-modal-{{ $order->id }}')">
+                                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                    </svg>
+                                                    <span class="sr-only">Tutup</span>
+                                                </button>
+                                                <div class="p-4 md:p-5">
+                                                    <div class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-500 mb-4">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    </div>
+                                                    <h3 class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">Aktifkan Order?</h3>
+                                                    <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Anda akan mengaktifkan pesanan undangan untuk:<br><strong class="text-gray-700 dark:text-white">{{ $order->content['mempelai']['pria']['nama'] }} & {{ $order->content['mempelai']['wanita']['nama'] }}</strong></p>
+                                                    
+                                                    <div class="flex items-center justify-center" style="gap:0.75rem;">
+                                                        <button onclick="document.getElementById('approve-form-{{ $order->id }}').submit()" type="button" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none dark:focus:ring-blue-800">
+                                                            Ya, Aktifkan!
+                                                        </button>
+                                                        <button onclick="closeAdminModal('approve-modal-{{ $order->id }}')" type="button" class="text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:ring-4 focus:ring-gray-200 shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                                            Batal
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -199,13 +233,41 @@
                                 </td>
                                 <td class="text-right">
                                     @if($client->user)
-                                    <form action="{{ route('admin.resetPassword', $client->user->id) }}" method="POST" onsubmit="konfirmasiSwalReset(event, '{{ $client->user->email }}')">
+                                    <form id="reset-form-{{ $client->user->id }}" action="{{ route('admin.resetPassword', $client->user->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn-reset">
+                                        <button type="button" class="btn-reset" onclick="openAdminModal('popup-modal-{{ $client->user->id }}')">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
                                             Reset Password
                                         </button>
                                     </form>
+
+                                    <!-- Flowbite Reset Modal -->
+                                    <div id="popup-modal-{{ $client->user->id }}" tabindex="-1" style="display:none;" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[100] w-full h-full bg-black/50 flex justify-center items-center">
+                                        <div class="p-4 w-full max-w-md max-h-full">
+                                            <div class="relative bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-2xl shadow-sm p-4 md:p-6">
+                                                <button type="button" style="position:absolute; top:12px; right:12px;" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" onclick="closeAdminModal('popup-modal-{{ $client->user->id }}')">
+                                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                    </svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                                <div class="p-4 md:p-5 text-center">
+                                                    <svg class="mx-auto mb-4 text-red-500 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                                    <h3 class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">Reset Password Akun?</h3>
+                                                    <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Apakah Anda yakin ingin mereset password untuk akun <br><strong class="text-gray-700 dark:text-white">{{ $client->user->email }}</strong>?</p>
+                                                    
+                                                    <div class="flex items-center justify-center" style="gap:0.75rem;">
+                                                        <button onclick="document.getElementById('reset-form-{{ $client->user->id }}').submit()" type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none dark:focus:ring-red-800">
+                                                            Ya, Reset
+                                                        </button>
+                                                        <button onclick="closeAdminModal('popup-modal-{{ $client->user->id }}')" type="button" class="text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:ring-4 focus:ring-gray-200 shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                                                            Batal
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @endif
                                 </td>
                             </tr>
@@ -285,7 +347,11 @@ Terima kasih!</textarea>
 
             <div class="new-password-box">
                 <p class="new-password-label">Password Baru</p>
-                <p class="new-password-value select-all">{{ session('reset_success')['password'] }}</p>
+                <p class="new-password-value select-all mb-2">{{ session('reset_success')['password'] }}</p>
+                <button onclick="copyResetPassword(this, '{{ session('reset_success')['password'] }}')" class="copy-btn mt-3" style="position: relative; display: inline-flex; align-items: center; justify-content: center; transform: none; right: auto; top: auto; background: white; border: 1px solid #e5e7eb; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; color: #374151; transition: all 0.2s; margin: 0 auto;">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    Salin Password
+                </button>
             </div>
 
             <button onclick="closeModal('resetModal')" class="modal-close-btn">Tutup</button>
@@ -382,8 +448,8 @@ Terima kasih!</textarea>
         .dark .email-display { background: rgb(55 65 81); color: white; }
 
         /* Buttons */
-        .btn-activate { display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(to right, #6366f1, #8b5cf6); color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em; box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.4); transition: all 0.2s; }
-        .btn-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(99, 102, 241, 0.5); }
+        .btn-activate { display: inline-flex; align-items: center; gap: 0.5rem; background: #2563eb; color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em; box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.4); transition: all 0.2s; }
+        .btn-activate:hover { transform: translateY(-2px); background: #1d4ed8; box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.5); }
         .btn-reset { display: inline-flex; align-items: center; gap: 0.375rem; background: white; color: #ef4444; padding: 0.5rem 1rem; border-radius: 0.625rem; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s; margin-left: auto; }
         .btn-reset:hover { background: rgba(239, 68, 68, 0.1); }
         .dark .btn-reset { background: rgb(55 65 81); color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
@@ -452,50 +518,39 @@ Terima kasih!</textarea>
             setTimeout(() => { btn.innerText = 'Salin'; btn.style.color = ''; }, 2000);
         }
 
-        @if(session('success'))
-        Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: '#ECFDF5',
-            color: '#065F46',
-            iconColor: '#34D399'
-        }).fire({ icon: 'success', title: '{{ session('success') }}' });
-        @endif
 
-        function konfirmasiSwalACC(event, namaPasangan) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Aktifkan Order?',
-                html: "Anda akan mengaktifkan undangan untuk:<br><b>" + namaPasangan + "</b>",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#6366f1',
-                cancelButtonColor: '#9CA3AF',
-                confirmButtonText: 'Ya, Aktifkan!',
-                cancelButtonText: 'Batal',
-                showLoaderOnConfirm: true,
-                preConfirm: () => event.target.submit()
+
+
+
+
+        function copyResetPassword(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = btn.innerHTML;
+                btn.innerText = 'Tersalin!';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+                btn.style.borderColor = 'transparent';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = 'white';
+                    btn.style.color = '#374151';
+                    btn.style.borderColor = '#e5e7eb';
+                }, 2000);
             });
         }
-
-        function konfirmasiSwalReset(event, email) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Reset Password?',
-                html: "Password akun <b>" + email + "</b> akan diganti.",
-                icon: 'warning',
-                iconColor: '#EF4444',
-                showCancelButton: true,
-                confirmButtonColor: '#EF4444',
-                cancelButtonColor: '#9CA3AF',
-                confirmButtonText: 'Ya, Reset!',
-                cancelButtonText: 'Batal',
-                showLoaderOnConfirm: true,
-                preConfirm: () => event.target.submit()
-            });
+        function openAdminModal(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeAdminModal(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'none';
+                document.body.style.overflow = '';
+            }
         }
     </script>
 </x-app-layout>
